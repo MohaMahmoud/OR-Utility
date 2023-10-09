@@ -15,7 +15,7 @@ public enum CommandType {
     //private final String commandUsage;
     private final String commandDescription;
 
-    CommandType(String commandString, String commandUsage, String commandDescription) {
+    CommandType(String commandString, String commandDescription) {
         this.commandString = commandString;
         this.commandDescription = commandDescription;
     }
