@@ -7,13 +7,12 @@ import java.util.List;
 import util.LinearProgramFormatter;
 
 public class LinearProgram {
-    private int variableCount;
+    private int variableCount = 3;
     private final ObjectiveFunction objectiveFunction;
     private List<Constraint> constraints;
 
-    public LinearProgram(int variableCount, OptimizationDirection optimizationDirection) {
-        this.variableCount = variableCount;
-        this.objectiveFunction = new ObjectiveFunction(optimizationDirection, variableCount);
+    public LinearProgram() {
+        this.objectiveFunction = new ObjectiveFunction(OptimizationDirection.MAX, variableCount);
         this.constraints = new ArrayList<>();
     }
 
