@@ -39,7 +39,7 @@ public class LinearProgramFormatter {
         builder.append(OBJECTIVE_FUNCTION_PREFIX);
 
         // Format the cells of all the coefficients.
-        List<Double> coefficients = function.getCoefficients();
+        List<Double> coefficients = function.getDecisionVariables();
         formatCoefficients(builder, coefficients, colWidths);
         builder.append(function.getDirection().toString());
     }

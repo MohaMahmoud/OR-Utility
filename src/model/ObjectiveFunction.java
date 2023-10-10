@@ -6,22 +6,22 @@ import java.util.List;
 
 public class ObjectiveFunction {
     private OptimizationDirection direction;
-    private List<Double> coefficients;
+    private List<Double> decisionVariables;
 
     public ObjectiveFunction(OptimizationDirection direction, int variableCount) {
         this.direction = direction;
-        this.coefficients = new ArrayList<>(variableCount);
+        this.decisionVariables = new ArrayList<>(variableCount);
         for (int i = 0; i < variableCount; i++) {
-            coefficients.add(0.0);
+            decisionVariables.add(0.0);
         }
     }
 
-    public List<Double> getCoefficients() {
-        return Collections.unmodifiableList(coefficients);
+    public List<Double> getDecisionVariables() {
+        return Collections.unmodifiableList(decisionVariables);
     }
 
-    public void setCoefficients(List<Double> coefficients) {
-        this.coefficients = coefficients;
+    public void setDecisionVariables(List<Double> decisionVariables) {
+        this.decisionVariables = decisionVariables;
     }
 
     public OptimizationDirection getDirection() {
