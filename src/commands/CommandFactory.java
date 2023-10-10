@@ -1,7 +1,8 @@
 package commands;
 
-    import src.LinearProgram;
     import java.util.Scanner;
+
+import model.LinearProgram;
 
 public class CommandFactory {
     private LinearProgram linearProgram;

@@ -1,8 +1,6 @@
-package src;
-
+package model;
 import java.util.Collections;
 import java.util.List;
-import src.ComparisonOperator;
 
 public class Constraint {
     private List<Double> coefficients;

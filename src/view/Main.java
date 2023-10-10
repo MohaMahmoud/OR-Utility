@@ -1,10 +1,12 @@
-package src;
+package view;
 
 import commands.CommandLineHandler;
-import src.OptimizationDirection;
-import src.LinearProgram;
+import model.LinearProgram;
+import model.OptimizationDirection;
 
-
+/**
+ * Main entry point to the OR-Utility program
+ */
 public class Main {
     public static void main(String[] args) {
         int numVariables = 3;

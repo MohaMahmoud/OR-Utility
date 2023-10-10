@@ -1,12 +1,12 @@
 package commands;
 
-import src.LinearProgram;
-import src.Constraint;
-import src.ComparisonOperator;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.ComparisonOperator;
+import model.Constraint;
+import model.LinearProgram;
 
 public class AddDummyCommand extends CommandExecutor {
     private LinearProgram linearProgram;
@@ -17,8 +17,8 @@ public class AddDummyCommand extends CommandExecutor {
 
     @Override
     public void execute() {
-        linearProgram.setNumVariables(6);
-        linearProgram.setObjectiveCoeffs(Arrays.asList(1.0, -2.0, 0.0, 3.0, 0.0, 1.5));
+        linearProgram.setVariableCount(6);
+        linearProgram.getObjectiveFunction().setCoefficients(Arrays.asList(1.0, -2.0, 0.0, 3.0, 0.0, 1.5));
 
         addConstraintDirectly("1 2 0 0 1.5 3 = 10");
         addConstraintDirectly("0 0 1 -4 0 2 >= 5");
@@ -34,7 +34,7 @@ public class AddDummyCommand extends CommandExecutor {
     private void addConstraintDirectly(String constraintString) {
         String[] commandParts = constraintString.split(" ");
 
-        int numCoefficients = linearProgram.getNumVariables();
+        int numCoefficients = linearProgram.getVariableCount();
         List<Double> coefficients = new ArrayList<>();
 
         for (int i = 0; i < numCoefficients; i++) {
@@ -76,5 +76,3 @@ public class AddDummyCommand extends CommandExecutor {
         }
     }
 }
-
-

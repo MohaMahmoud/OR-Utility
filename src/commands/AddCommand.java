@@ -1,12 +1,11 @@
 package commands;
 
-import src.LinearProgram;
-import src.Constraint;
-import src.ComparisonOperator;
+import model.ComparisonOperator;
+import model.Constraint;
+import model.LinearProgram;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class AddCommand extends CommandExecutor {
     private LinearProgram linearProgram;
@@ -19,7 +18,7 @@ public class AddCommand extends CommandExecutor {
 
     @Override
     public void execute() {
-        int numCoefficients = linearProgram.getNumVariables();
+        int numCoefficients = linearProgram.getVariableCount();
         List<Double> coefficients = new ArrayList<>();
 
         for (int i = 1; i <= numCoefficients; i++) {
@@ -61,6 +60,3 @@ public class AddCommand extends CommandExecutor {
         }
     }
 }
-
-
-

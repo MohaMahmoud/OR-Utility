@@ -1,6 +1,6 @@
 package commands;
 
-import src.LinearProgram;
+import model.LinearProgram;
 
 public class ShowCommand extends CommandExecutor {
     private final LinearProgram linearProgram;

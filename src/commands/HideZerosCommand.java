@@ -1,6 +1,6 @@
 package commands;
 
-import src.LinearProgram;
+import model.LinearProgram;
 
 public class HideZerosCommand extends CommandExecutor {
     private LinearProgram linearProgram;
@@ -15,7 +15,7 @@ public class HideZerosCommand extends CommandExecutor {
     }
 
     private void toggleHideZeros() {
-        linearProgram.setHideZeroCoefficients(!linearProgram.isHideZeroCoefficients());
-        System.out.println("Zero coefficient display " + (linearProgram.isHideZeroCoefficients() ? "disabled" : "enabled") + ".");
+        // linearProgram.setHideZeroCoefficients(!linearProgram.isHideZeroCoefficients());
+        // System.out.println("Zero coefficient display " + (linearProgram.isHideZeroCoefficients() ? "disabled" : "enabled") + ".");
     }
 }

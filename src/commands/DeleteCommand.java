@@ -1,10 +1,6 @@
 package commands;
 
-import src.LinearProgram;
-import src.Constraint;
-
-import java.util.List;
-import java.util.Scanner;
+import model.LinearProgram;
 
 public class DeleteCommand extends CommandExecutor {
     private final LinearProgram linearProgram;

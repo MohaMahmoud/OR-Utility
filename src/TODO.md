@@ -1,0 +1,1 @@
+- [ ] Add usage info in README.md and command-line for commands

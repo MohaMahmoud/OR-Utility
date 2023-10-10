@@ -1,11 +1,11 @@
 package commands;
 
-import src.LinearProgram;
-import src.Constraint;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import model.Constraint;
+import model.LinearProgram;
 
 public class SetNumVarCommand extends CommandExecutor {
     private LinearProgram linearProgram;
@@ -33,8 +33,8 @@ public class SetNumVarCommand extends CommandExecutor {
         }
 
         // Adjust constraints when changing the number of variables
-        int oldNumVariables = linearProgram.getNumVariables();
-        linearProgram.setNumVariables(numVariables);
+        int oldNumVariables = linearProgram.getVariableCount();
+        linearProgram.setVariableCount(numVariables);
 
         if (oldNumVariables < numVariables) {
             // Add zeros to constraints for added variables
@@ -94,5 +94,3 @@ public class SetNumVarCommand extends CommandExecutor {
         }
     }
 }
-
-
