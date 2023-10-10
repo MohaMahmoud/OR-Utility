@@ -17,11 +17,31 @@ public class Constraint {
         return Collections.unmodifiableList(coefficients);
     }
 
+
+    public double getRightHandSide() {
+        return rightHandSide;
+    }
+
     public ComparisonOperator getOperator() {
         return operator;
     }
 
-    public double getRightHandSide() {
-        return rightHandSide;
+    public void setOperator(ComparisonOperator operator) {
+        this.operator = operator;
+    }
+
+    public void negate() {
+        // Negate the Operator.
+        if (!operator.equals(ComparisonOperator.EQ)) {
+            operator = (operator.equals(ComparisonOperator.LEQ)) ? ComparisonOperator.GEQ : ComparisonOperator.LEQ;
+        }
+
+        // Negate all the coefficients.
+        for (int i = 0; i < coefficients.size(); i++) {
+            coefficients.set(i, -coefficients.get(i));
+        }
+
+        // Negate the right hand side.
+        rightHandSide = -rightHandSide;
     }
 }

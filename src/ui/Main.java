@@ -1,6 +1,5 @@
-package view;
+package ui;
 
-import commands.CommandLineHandler;
 import model.LinearProgram;
 import model.OptimizationDirection;
 

@@ -1,10 +1,13 @@
+* Mohammad
+- [ ] Formatter überarbeiten.
+
 * High prio
-- [ ] Add usage info in README.md and command-line for commands
+- [ ] Finish standard from command
 - [ ] Constraint negation
-- [ ] Objective Function negation
-- [ ] Objective Function to = function (mit Schlupfvariablen. Zur Abgrenzung die anderen Strukturvariablen nennen)
+- [ ] Constraints to = function (mit Schlupfvariablen. Zur Abgrenzung die anderen Strukturvariablen nennen)
 
 * Medium prio
+- [ ] Add usage info in README.md and command-line for commands
 - [ ] welche max. Form liegt vor?
 
 * Low prio

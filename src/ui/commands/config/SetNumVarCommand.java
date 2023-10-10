@@ -1,4 +1,4 @@
-package commands;
+package ui.commands.config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import model.Constraint;
 import model.LinearProgram;
+import ui.commands.CommandExecutor;
 
 public class SetNumVarCommand extends CommandExecutor {
     private LinearProgram linearProgram;
@@ -46,7 +47,7 @@ public class SetNumVarCommand extends CommandExecutor {
 
         // Prompt the user to enter the coefficients for the updated objective function
         System.out.println("Enter the coefficients for the updated objective function:");
-        linearProgram.setObjectiveCoeffs(enterObjectiveCoefficients(numVariables));
+        linearProgram.getObjectiveFunction().setDecisionVariables(enterObjectiveCoefficients(numVariables));
         System.out.println("Objective function coefficients updated successfully.");
     }
 

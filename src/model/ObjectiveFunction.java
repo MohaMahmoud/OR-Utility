@@ -31,4 +31,14 @@ public class ObjectiveFunction {
     public void setDirection(OptimizationDirection direction) {
         this.direction = direction;
     }
+
+    public void negate() {
+        // Change the direction of the objective function;
+        direction = (direction.equals(OptimizationDirection.MAX)) ? OptimizationDirection.MIN : OptimizationDirection.MAX;
+
+        // Negate all the decision variables.
+        for (int i = 0; i < decisionVariables.size(); i++) {
+            decisionVariables.set(i, -decisionVariables.get(i));
+        }
+    }
 }

@@ -1,4 +1,5 @@
-package commands;
+package ui.commands;
+
 
 import model.LinearProgram;
 

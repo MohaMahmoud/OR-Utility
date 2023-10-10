@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import view.LinearProgramFormatter;
+import util.LinearProgramFormatter;
 
 public class LinearProgram {
     private int variableCount;

@@ -1,43 +1,28 @@
-package commands;
-
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
+package ui.commands.config;
 
 import model.ComparisonOperator;
 import model.Constraint;
 import model.LinearProgram;
+import ui.commands.CommandExecutor;
 
-public class AddDummyCommand extends CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class AddCommand extends CommandExecutor {
     private LinearProgram linearProgram;
+    private String[] commandParts;
 
-    public AddDummyCommand(LinearProgram linearProgram) {
+    public AddCommand(LinearProgram linearProgram, String[] commandParts) {
         this.linearProgram = linearProgram;
+        this.commandParts = commandParts;
     }
 
     @Override
     public void execute() {
-        linearProgram.setVariableCount(6);
-        linearProgram.getObjectiveFunction().setCoefficients(Arrays.asList(1.0, -2.0, 0.0, 3.0, 0.0, 1.5));
-
-        addConstraintDirectly("1 2 0 0 1.5 3 = 10");
-        addConstraintDirectly("0 0 1 -4 0 2 >= 5");
-        addConstraintDirectly("3 1 0 -2 0 0 = 12");
-        addConstraintDirectly("-1 0 2 0 -1 0 <= 8");
-        addConstraintDirectly("0 0 0 0 0 0 >= -5");
-        addConstraintDirectly("1 1 1 1 1 1 <= 20");
-        addConstraintDirectly("-2 0 0 1 -2 0 >= 7");
-        addConstraintDirectly("0 3 -2 0 0 1 <= 6");
-        addConstraintDirectly("1 -1 0 0 0 -1 = 4");
-    }
-
-    private void addConstraintDirectly(String constraintString) {
-        String[] commandParts = constraintString.split(" ");
-
         int numCoefficients = linearProgram.getVariableCount();
         List<Double> coefficients = new ArrayList<>();
 
-        for (int i = 0; i < numCoefficients; i++) {
+        for (int i = 1; i <= numCoefficients; i++) {
             try {
                 double coefficient = Double.parseDouble(commandParts[i]);
                 coefficients.add(coefficient);
@@ -47,12 +32,12 @@ public class AddDummyCommand extends CommandExecutor {
             }
         }
 
-        String operatorStr = commandParts[numCoefficients];
+        String operatorStr = commandParts[numCoefficients + 1];
         ComparisonOperator operator = parseOperator(operatorStr);
 
         if (operator != null) {
             try {
-                double rightHandSide = Double.parseDouble(commandParts[numCoefficients + 1]);
+                double rightHandSide = Double.parseDouble(commandParts[numCoefficients + 2]);
                 Constraint constraint = new Constraint(coefficients, operator, rightHandSide);
                 linearProgram.addConstraint(constraint);
                 System.out.println("Constraint added successfully.");

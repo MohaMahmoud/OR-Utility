@@ -1,6 +1,7 @@
-package commands;
+package ui.commands.config;
 
 import model.LinearProgram;
+import ui.commands.CommandExecutor;
 
 public class DeleteCommand extends CommandExecutor {
     private final LinearProgram linearProgram;

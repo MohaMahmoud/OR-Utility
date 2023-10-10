@@ -1,8 +1,12 @@
-package commands;
+package ui.commands;
 
-    import java.util.Scanner;
+import java.util.Scanner;
 
 import model.LinearProgram;
+import ui.commands.config.AddCommand;
+import ui.commands.config.DeleteCommand;
+import ui.commands.config.EditObjCommand;
+import ui.commands.config.SetNumVarCommand;
 
 public class CommandFactory {
     private LinearProgram linearProgram;
@@ -21,8 +25,6 @@ public class CommandFactory {
                 return new SetNumVarCommand(scanner, linearProgram);
             case SHOW:
                 return new ShowCommand(linearProgram);
-            case HIDE_ZEROS:
-                return new HideZerosCommand(linearProgram);
             case ADD_DUMMY:
                 return new AddDummyCommand(linearProgram);
             case DELETE:
@@ -42,4 +44,3 @@ public class CommandFactory {
         }
     }
 }
-

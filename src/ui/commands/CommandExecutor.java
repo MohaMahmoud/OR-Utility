@@ -1,4 +1,4 @@
-package commands;
+package ui.commands;
 
 public class CommandExecutor {
     public void execute() {

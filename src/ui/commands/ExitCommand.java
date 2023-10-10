@@ -1,5 +1,4 @@
-package commands;
-
+package ui.commands;
 public class ExitCommand extends CommandExecutor {
     @Override
     public void execute() {

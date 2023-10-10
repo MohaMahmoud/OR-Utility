@@ -1,4 +1,4 @@
-package view;
+package util;
 
 import java.util.List;
 
@@ -37,6 +37,7 @@ public class LinearProgramFormatter {
 
     private static void formatObjectiveFunction(StringBuilder builder, int[] colWidths, ObjectiveFunction function) {
         builder.append(OBJECTIVE_FUNCTION_PREFIX);
+
 
         // Format the cells of all the coefficients.
         List<Double> coefficients = function.getDecisionVariables();
@@ -77,7 +78,7 @@ public class LinearProgramFormatter {
         int[] colWidths = new int[program.getVariableCount() + 1];
 
         // Filling column widths widths of the objective function.
-        List<Double> coefficients = program.getObjectiveFunction().getCoefficients();
+        List<Double> coefficients = program.getObjectiveFunction().getDecisionVariables();
         if (!coefficients.isEmpty()) {
             for (int i = 0; i < program.getVariableCount(); i++) {
                 colWidths[i] = String.valueOf(coefficients.get(i)).length();
@@ -111,8 +112,12 @@ public class LinearProgramFormatter {
     }
 
     private static void formatCell(StringBuilder builder, Double coefficient, int colWidth, boolean showZeros) {
-        // If needed leave the cell blank instead of the value 0.
-        final String formattedCoefficient = (coefficient == 0.0 && !showZeros) ? "" : String.valueOf(coefficient);
+        final String formattedCoefficient;
+        if (coefficient != 0.0 || showZeros) {
+            formattedCoefficient = (coefficient % 1 == 0) ? String.format("%.0f", coefficient) : String.valueOf(coefficient);
+        } else {
+            formattedCoefficient = "";
+        }
         
         // Formats the cell to the corrent width and align the value to the right.
         builder.append(String.format("%" + colWidth + "s", formattedCoefficient));

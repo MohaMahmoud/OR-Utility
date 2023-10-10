@@ -1,10 +1,11 @@
-package commands;
+package ui.commands.config;
 
 
 import java.util.List;
 import java.util.Scanner;
 
 import model.LinearProgram;
+import ui.commands.CommandExecutor;
 
 public class EditObjCommand extends CommandExecutor {
     private final Scanner scanner;
@@ -21,7 +22,7 @@ public class EditObjCommand extends CommandExecutor {
         String coeffInput = scanner.nextLine();
         String[] coeffStrings = coeffInput.split(" ");
 
-        List<Double> objectiveCoeffs = linearProgram.getObjectiveFunction().getCoefficients();
+        List<Double> objectiveCoeffs = linearProgram.getObjectiveFunction().getDecisionVariables();
         int numVariables = objectiveCoeffs.size();
 
         if (coeffStrings.length != numVariables) {

@@ -1,16 +1,17 @@
-package commands;
+package ui;
 
 import java.util.Scanner;
 
 import model.LinearProgram;
+import ui.commands.CommandExecutor;
+import ui.commands.CommandFactory;
+import ui.commands.CommandType;
 
 public class CommandLineHandler {
-    private LinearProgram linearProgram;
     private Scanner scanner;
     private CommandFactory commandFactory;
 
     public CommandLineHandler(LinearProgram linearProgram) {
-        this.linearProgram = linearProgram;
         this.scanner = new Scanner(System.in);
         this.commandFactory = new CommandFactory(linearProgram);
     }
@@ -35,5 +36,4 @@ public class CommandLineHandler {
         }
     }
 }
-
 
