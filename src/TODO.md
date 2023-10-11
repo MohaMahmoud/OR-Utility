@@ -2,20 +2,23 @@
 - [ ] Formatter überarbeiten.
 
 * High prio
-- [ ] Finish standard from command
-- [ ] Constraint negation
+- [ ] SoloConstraint class, soloConstraints in LinearProgram
+- [ ] split method of = constraints
 - [ ] Constraints to = function (mit Schlupfvariablen. Zur Abgrenzung die anderen Strukturvariablen nennen)
+- [ ] SoloConstraint bei FormCommands hinzufügen
+- [X] Finish standard from command
+- [X] Constraint negation
 
 * Medium prio
 - [ ] Add usage info in README.md and command-line for commands
-- [ ] welche max. Form liegt vor?
+- [ ] SoloConstraints integration in /show
+- [X] welche max. Form liegt vor?
 
 * Low prio
-- [ ] Nichtnegativitätsbedingungen (separat für Simplex!)
+- [ ] x1, x2, ... xn Spalte bei /show
 
 
 ** Ideen
-- bei der Matrixdarstellung x1, x2... xn dazuschreiben
 - grafische Lösung (Zukunft)
 
 

@@ -44,4 +44,14 @@ public class Constraint {
         // Negate the right hand side.
         rightHandSide = -rightHandSide;
     }
+
+    public Constraint copy() {
+        List<Double> copiedCoefficients = new ArrayList<>(coefficients);
+        ComparisonOperator copiedOperator = operator;
+        double copiedRightHandSide = rightHandSide;
+
+        // Create and return a new Constraint instance with copied values
+        return new Constraint(copiedCoefficients, copiedOperator, copiedRightHandSide);
+    }
+
 }

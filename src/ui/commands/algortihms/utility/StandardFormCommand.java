@@ -18,26 +18,50 @@ public class StandardFormCommand {
 
     public void execute() {
         ObjectiveFunction function = program.getObjectiveFunction();
-        List<Constraint> constrains = program.getConstraints();
 
         // If the objective function is a MIN function then change it to MAX.
         if (function.getDirection().equals(OptimizationDirection.MIN)) {
             function.negate();
         }
 
-        // Change all constrains to <=.
-        List<Constraint> standajhsdgfjha = new ArrayList<>();
+        // Change all constrains to <=
+        List<Constraint> constrains = program.getConstraints();
+        List<Constraint> refactoredConstraints = new ArrayList<>();
         for (Constraint constraint : constrains) {
-            if (constraint.getOperator().equals(ComparisonOperator.LEQ)) {
-                standajhsdgfjha.add(constraint);
-            } else if (constraint.getOperator().equals(ComparisonOperator.GEQ)) {
-                constraint.negate();
-                standajhsdgfjha.add(constraint);
-            } else {
-                constraint.setOperator(ComparisonOperator.LEQ);
-                standajhsdgfjha.add(constraint);
-                //TODO unfinished
+            switch (constraint.getOperator()) {
+                case ComparisonOperator.GEQ:
+                    constraint.negate();
+                    break;
+                case ComparisonOperator.EQ:
+                    // split = in <= and >=
+                    constraint.setOperator(ComparisonOperator.LEQ);
+                    Constraint geqConstraint = constraint.copy();
+
+                    // negate the >= constraint
+                    geqConstraint.negate();
+                    refactoredConstraints.add(geqConstraint);
+                    break;
             }
+            // in every case the (updated) constraint has to be added
+            refactoredConstraints.add(constraint);
         }
+        program.setConstraints(refactoredConstraints);
+
+        /*
+        // Change all solo constraints to >=
+        List<Constraint> soloConstrains = program.getSoloConstraints();
+        List<Constraint> refactoredSoloConstraints = new ArrayList<>();
+        for (Constraint constraint : soloConstrains) {
+            switch (constraint.getOperator()) {
+                case ComparisonOperator.LEQ:
+                    // TODO error
+                    break
+                case ComparisonOperator.EQ:
+                    // TODO x = x- + x+
+            }
+            // in every case the (updated) constraint has to be added
+            refactoredSoloConstraints.add(constraint);
+        }
+        program.setSoloConstraints(refactoredConstraints);*/
     }
 }
