@@ -39,37 +39,16 @@ public class NormalFormOperation extends Operation {
 
         // Increase variableCount of the linear program by the amount of constraints.
         List<Constraint> constraints = program.getConstraints();
-        final int slackVariableAmount = constraints.size();
-        final int oldVariableAmount = program.getVariableCount();
-        program.setVariableCount(oldVariableAmount + slackVariableAmount);
+        final int slackVariableCount = constraints.size();
+        final int oldVariableCount = program.getVariableCount();
+        program.setVariableCount(slackVariableCount + program.getVariableCount());
 
         // Extend constraint matrix with an identity function of the corresponding size.
-        for (int i = 0; i < slackVariableAmount; i++) {
+        for (int i = 0; i < slackVariableCount; i++) {
             Constraint constraint = constraints.get(i);
 
             List<Double> coefficients = new ArrayList<>(constraint.getCoefficients());
-            coefficients.set(i + oldVariableAmount, 1.0);
-            constraint.setCoefficients(coefficients);
-            /*for (int j = 0; j < slackVariableAmount; j++) {
-                // Add the slack variables.
-                if (i == j) coefficients.add(1.0);
-                else coefficients.add(0.0);
-            }
-            constraint.setCoefficients(coefficients);*/
-
-            // Set operator to EQ.
-            constraint.setOperator(ComparisonOperator.EQ);
-        }
-
-        // Extend constraint matrix with an identity function of the corresponding size.
-        for (int i = 0; i < slackVariableAmount; i++) {
-            Constraint constraint = constraints.get(i);
-            List<Double> coefficients = new ArrayList<>(constraint.getCoefficients());
-            for (int j = 0; j < slackVariableAmount; j++) {
-                // Add the slack variables.
-                if (i == j) coefficients.add(1.0);
-                else coefficients.add(0.0);
-            }
+            coefficients.set(i + oldVariableCount, 1.0);
             constraint.setCoefficients(coefficients);
 
             // Set operator to EQ.

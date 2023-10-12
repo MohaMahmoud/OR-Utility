@@ -3,9 +3,8 @@
 - [ ] Add und remove coefficient methode.
 
 ### High prio
-- [ ] Constraints to = function (mit Schlupfvariablen. Zur Abgrenzung die anderen Strukturvariablen nennen)
-- [ ] SoloConstraint bei FormCommands hinzufügen
-- [ ] ChangeObjectiveFunctionOperation
+- [X] Constraints to = function (mit Schlupfvariablen. Zur Abgrenzung die anderen Strukturvariablen nennen)
+- [X] ChangeObjectiveFunctionOperation
 - [X] split method of = constraints
 - [X] Finish standard from command
 - [X] Constraint negation

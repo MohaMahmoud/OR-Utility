@@ -27,12 +27,6 @@ public class DummyDataOperation extends Operation {
         program.getObjectiveFunction().setDecisionVariables(Arrays.asList(1.2, -2.0, 0.0, 3.0, -1.0, 1.5));
 
         // Constraints
-        addConstraintDirectly("1.0 2.5 0.0 0.0 1.5 3.3 = 10.5");
-        addConstraintDirectly("0.0 0.0 1.8 -4.7 0.0 2.2 >= 5.3");
-        addConstraintDirectly("3.2 1.1 0.0 -2.4 0.0 0.0 = 12.7");
-        addConstraintDirectly("-1.6 0.0 2.9 0.0 -1.8 0.0 <= 8.6");
-        addConstraintDirectly("0.0 0.0 0.0 0.0 0.0 0.0 >= -5.2");
-        addConstraintDirectly("1.7 1.6 1.5 1.4 1.3 1.2 <= 20.0");
         addConstraintDirectly("-2.2 0.0 0.0 1.9 -2.1 0.0 >= 7.4");
         addConstraintDirectly("0.0 3.7 -2.8 0.0 0.0 1.9 <= 6.5");
         addConstraintDirectly("1.3 -1.7 0.0 0.0 0.0 -1.2 = 4.9");
@@ -71,7 +65,6 @@ public class DummyDataOperation extends Operation {
                 double rightHandSide = Double.parseDouble(commandParts[numCoefficients + 1]);
                 Constraint constraint = new Constraint(coefficients, operator, rightHandSide);
                 program.addConstraint(constraint);
-                System.out.println("Constraint added successfully.");
             } catch (NumberFormatException e) {
                 System.out.println("Invalid right-hand side value. Use a numeric value.");
             }

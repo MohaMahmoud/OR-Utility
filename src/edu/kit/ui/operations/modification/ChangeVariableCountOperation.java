@@ -33,7 +33,6 @@ public class ChangeVariableCountOperation extends Operation {
         }
         if (variableCount < 0) throw new OperationException("Invalid value. Use a positive integer.");
 
-        // TODO Was machen wenn variblen weggestrichen werden?
         program.setVariableCount(variableCount);
         return SUCCESS;
     }
