@@ -1,8 +1,8 @@
 package ui.operations.core;
 
 import model.LinearProgram;
-import ui.Operation;
-import ui.OperationException;
+import ui.exceptions.OperationException;
+import ui.logic.Operation;
 
 public class ShowOperation extends Operation {
     private static final String NAME = "/show";
@@ -16,7 +16,7 @@ public class ShowOperation extends Operation {
     }
 
     @Override
-    public String execute(String[] args) throws OperationException {
+    public String execute() throws OperationException {
         return program.toString();
     }
 

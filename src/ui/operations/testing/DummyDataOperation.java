@@ -7,8 +7,8 @@ import java.util.List;
 import model.ComparisonOperator;
 import model.Constraint;
 import model.LinearProgram;
-import ui.Operation;
-import ui.OperationException;
+import ui.exceptions.OperationException;
+import ui.logic.Operation;
 
 public class DummyDataOperation extends Operation {
     private static final String NAME = "/dummydata";
@@ -22,7 +22,7 @@ public class DummyDataOperation extends Operation {
     }
 
     @Override
-    public String execute(String[] args) throws OperationException {
+    public String execute() throws OperationException {
         program.setVariableCount(6);
         program.getObjectiveFunction().setDecisionVariables(Arrays.asList(1.2, -2.0, 0.0, 3.0, -1.0, 1.5));
 

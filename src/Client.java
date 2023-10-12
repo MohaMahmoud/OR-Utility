@@ -1,5 +1,5 @@
 import model.LinearProgram;
-import ui.OperationHandler;
+import ui.logic.OperationHandler;
 import ui.util.StringUtility;
 
 /**

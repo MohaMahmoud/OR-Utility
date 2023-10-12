@@ -1,13 +1,12 @@
-package ui;
+package ui.logic;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 import model.LinearProgram;
+import ui.exceptions.OperationException;
+import ui.operations.Result;
 
 public class OperationHandler {
-    private static final String SEPARATOR = " ";
-
     private final OperationFactory factory;
     private final Scanner scanner;
     private boolean running = false;
@@ -34,18 +33,13 @@ public class OperationHandler {
     }
 
     private void executeOperation(String input) {        
-        // Split the imput in command name and command arguments.
-        String[] splitOperation = input.trim().split(SEPARATOR);
-
-        String name = splitOperation[0];
-        String[] arguments = Arrays.copyOfRange(splitOperation, 1, splitOperation.length);
 
         // Match the input to the desired operation (if applicable).
-        Operation operation = factory.match(name);
+        Operation operation = factory.match(input);
 
         if (operation != null) {
             try {
-                final String output = operation.execute(arguments);
+                final String output = operation.execute();
                 Result.SUCCESS.print(output);
             } catch (OperationException exception) {
                 Result.FAILURE.print(exception.getMessage());

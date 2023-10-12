@@ -8,14 +8,14 @@ import model.Constraint;
 import model.LinearProgram;
 import model.ObjectiveFunction;
 import model.OptimizationDirection;
-import ui.Operation;
-import ui.OperationException;
+import ui.exceptions.OperationException;
+import ui.logic.Operation;
 
 public class StandardFormOperation extends Operation {
     private static final String NAME = "/standardform";
     private static final String DESCRIPTION = "Puts the linear program in the standard form.";
 
-    private LinearProgram program;
+    private final LinearProgram program;
 
     public StandardFormOperation(LinearProgram program) {
         super(NAME, DESCRIPTION);
@@ -23,7 +23,7 @@ public class StandardFormOperation extends Operation {
     }
 
     @Override
-    public String execute(String[] args) throws OperationException {
+    public String execute() throws OperationException {
         ObjectiveFunction function = program.getObjectiveFunction();
 
         // If the objective function is a MIN function then change it to MAX.

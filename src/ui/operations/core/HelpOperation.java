@@ -2,8 +2,8 @@ package ui.operations.core;
 
 import java.util.Collection;
 
-import ui.Operation;
-import ui.OperationException;
+import ui.exceptions.OperationException;
+import ui.logic.Operation;
 import ui.util.StringUtility;
 
 public class HelpOperation extends Operation {
@@ -18,7 +18,7 @@ public class HelpOperation extends Operation {
     }
 
     @Override
-    public String execute(String[] args) throws OperationException {
+    public String execute() throws OperationException {
         StringBuilder builder = new StringBuilder();
         for (Operation operation : operations) {
             builder.append(operation.toString()).append(StringUtility.BR);

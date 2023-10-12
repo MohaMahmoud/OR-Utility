@@ -1,4 +1,6 @@
-package ui;
+package ui.exceptions;
+
+import ui.logic.Operation;
 
 /**
  * This class signals that a {@link Operation} is not valid.

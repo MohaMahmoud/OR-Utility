@@ -1,8 +1,8 @@
 package ui.operations.core;
 
-import ui.Operation;
-import ui.OperationException;
-import ui.OperationHandler;
+import ui.exceptions.OperationException;
+import ui.logic.Operation;
+import ui.logic.OperationHandler;
 
 public class ExitOperation extends Operation {
     private static final String NAME = "/exit";
@@ -16,7 +16,7 @@ public class ExitOperation extends Operation {
     }
 
     @Override
-    public String execute(String[] args) throws OperationException {
+    public String execute() throws OperationException {
         handler.exit();
         return SUCCESS;
     }

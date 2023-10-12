@@ -18,11 +18,16 @@ public final class StringUtility {
      */
     public static final String BR = System.lineSeparator();
 
+    /**
+     * // TODO Javadoc
+     */
+    public static final String SPACE = " ";
+
     private static final String OBJECTIVE_FUNCTION_PREFIX = "OF: ";
     private static final String CONSTRAINT_PREFIX = "C%d: ";
 
     private static final String SEPARATOR = " | ";
-    private static final String SPACE = " ";
+
 
     private StringUtility() throws IllegalAccessException {
         throw new IllegalAccessException(UTILITY_CLASS_INSTANTIATION);
@@ -103,7 +108,8 @@ public final class StringUtility {
         List<Double> coefficients = program.getObjectiveFunction().getDecisionVariables();
         if (!coefficients.isEmpty()) {
             for (int i = 0; i < program.getVariableCount(); i++) {
-                colWidths[i] = String.valueOf(coefficients.get(i)).length();
+                String formattedCoefficient = removeTailingZeros(coefficients.get(i), true);
+                colWidths[i] = formattedCoefficient.length();
             }
         }
 
@@ -135,15 +141,15 @@ public final class StringUtility {
     }
 
     private static void formatCell(StringBuilder builder, Double coefficient, int colWidth, boolean showZeros) {
-        final String formattedCoefficient;
-        if (coefficient != 0.0 || showZeros) {
-            formattedCoefficient = (coefficient % 1 == 0) ? String.format("%.0f", coefficient)
-                    : String.valueOf(coefficient);
-        } else {
-            formattedCoefficient = "";
-        }
 
         // Formats the cell to the corrent width and align the value to the right.
-        builder.append(String.format("%" + colWidth + "s", formattedCoefficient));
+        builder.append(String.format("%" + colWidth + "s", removeTailingZeros(coefficient, showZeros)));
     }
+
+    private static String removeTailingZeros(Double coefficient, boolean showZeros) {
+        if (coefficient != 0.0 || showZeros) {
+            return (coefficient % 1 == 0) ? String.format("%.0f", coefficient) : String.valueOf(coefficient);
+        }
+        return "";
+    } // TODO Check why the formatting is still with too many white spaces
 }

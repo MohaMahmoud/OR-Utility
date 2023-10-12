@@ -1,4 +1,6 @@
-package ui;
+package ui.operations;
+
+import ui.logic.Operation;
 
 public enum Result {
 

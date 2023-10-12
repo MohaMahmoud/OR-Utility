@@ -1,4 +1,6 @@
-package ui;
+package ui.logic;
+
+import ui.exceptions.OperationException;
 
 public abstract class Operation {
     protected static final String SUCCESS = "OPERATION SUCCESSFUL";
@@ -16,5 +18,5 @@ public abstract class Operation {
         return name + " - " + description;
     }
 
-    public abstract String execute(String[] args) throws OperationException;
+    public abstract String execute() throws OperationException;
 }
