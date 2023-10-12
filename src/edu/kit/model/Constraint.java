@@ -18,6 +18,9 @@ public class Constraint {
         return Collections.unmodifiableList(coefficients);
     }
 
+    public void setCoefficients(List<Double> coefficients) {
+        this.coefficients = coefficients;
+    }
 
     public double getRightHandSide() {
         return rightHandSide;

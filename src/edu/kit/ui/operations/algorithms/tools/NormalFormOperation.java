@@ -25,8 +25,32 @@ public class NormalFormOperation extends Operation {
     @Override
     public String execute() throws OperationException {
         // if GetFormCommand == DEFAULT -> StandardFormCommand...
-        // else if GetFormCommand == Standard
+        // else if GetFormCommand == Standard:
 
+        // OF um n Nullen erweitern wobei n die Anzahl der constraints ist
+
+        // Extend constraint matrix with a slackVariableAmount Identityfunction
+        List<Constraint> constraints = program.getConstraints();
+        int slackVariableAmount = constraints.size();
+
+        for (int i = 0; i < slackVariableAmount; i++) {
+            Constraint constraint = constraints.get(i);
+            List<Double> coefficients = new ArrayList<>(constraint.getCoefficients());
+            for (int j = 0; j < slackVariableAmount; j++) {
+                if (j == i) {
+                    // slack variable
+                    coefficients.add(1.0);
+                } else {
+                    coefficients.add(0.0);
+                }
+            }
+            constraint.setCoefficients(coefficients);
+
+            // Set operator to =
+            constraint.setOperator(ComparisonOperator.EQ);
+        }
+
+        
         return SUCCESS;
     }
 }
