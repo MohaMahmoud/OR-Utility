@@ -1,10 +1,11 @@
 package edu.kit.ui.logic;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Scanner;
 
 import edu.kit.model.LinearProgram;
+import edu.kit.ui.operations.algorithms.tools.GetFormOperation;
 import edu.kit.ui.operations.algorithms.tools.StandardFormOperation;
 import edu.kit.ui.operations.core.ExitOperation;
 import edu.kit.ui.operations.core.HelpOperation;
@@ -18,7 +19,7 @@ public class OperationFactory {
     private Map<String, Operation> operations;
 
     public OperationFactory(OperationHandler handler, LinearProgram program, Scanner scanner) {
-        this.operations = new HashMap<>();
+        this.operations = new LinkedHashMap<>();
         initializeOperations(handler, program, scanner);
     }
 
@@ -34,20 +35,20 @@ public class OperationFactory {
         //operations.put("/changeobjectivefunction", null);
         operations.put("/addconstraint", new AddConstraintOperation(program, scanner));
         operations.put("/removeconstraint", new RemoveConstraintOperation(program, scanner));
+
         // ...
         // ...
         // ...
 
         // Algorithmic commands
+        operations.put("/getform", new GetFormOperation(program));
         operations.put("/standardform", new StandardFormOperation(program));
 
         // Used primarly for testing.
         operations.put("/dummydata", new DummyDataOperation(program));
 
-        //
+        // Core commands.
         operations.put("/help", new HelpOperation(operations.values()));
         operations.put("/exit", new ExitOperation(handler));
-        // TODO Check the order if it makes sense.
-        // TODO unfinished
     }
 }

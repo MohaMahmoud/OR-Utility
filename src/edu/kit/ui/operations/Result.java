@@ -3,7 +3,6 @@ package edu.kit.ui.operations;
 import edu.kit.ui.logic.Operation;
 
 public enum Result {
-
     /**
      * The {@link Operation} did not end successfully.
      */

@@ -1,4 +1,5 @@
 package edu.kit;
+
 import edu.kit.model.LinearProgram;
 import edu.kit.ui.logic.OperationHandler;
 import edu.kit.ui.util.StringUtility;

@@ -44,20 +44,9 @@ public class LinearProgram {
         constraints.remove(index);
     }
 
-    /*
-    private boolean areAllSoloConstraintsGeq() {
-        for (SoloConstraint soloConstraint : constraints) {
-            if (!soloConstraint.getOperator().equals(ComparisonOperator.GEQ)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    */
-
     public ProgramForm getForm() {
         // if its a min objective function or solo constraints are not all >=
-        if (objectiveFunction.getDirection().equals(OptimizationDirection.MIN) /* TODO || !areAllSoloConstraintsGeq()*/) {
+        if (objectiveFunction.getDirection().equals(OptimizationDirection.MIN)) {
             return ProgramForm.DEFAULT;
         }
 
