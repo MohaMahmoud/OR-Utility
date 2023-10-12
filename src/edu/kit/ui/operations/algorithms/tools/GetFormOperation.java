@@ -1,6 +1,6 @@
 package edu.kit.ui.operations.algorithms.tools;
 
-import edu.kit.model.LinearProgram;
+import edu.kit.model.*;
 import edu.kit.ui.exceptions.OperationException;
 import edu.kit.ui.logic.Operation;
 
@@ -17,6 +17,39 @@ public class GetFormOperation extends Operation {
 
     @Override
     public String execute() throws OperationException {
-        return program.getForm().toString();
+        // if its a min objective function or solo constraints are not all >=
+        if (program.getObjectiveFunction().getDirection().equals(OptimizationDirection.MIN)) {
+            return ProgramForm.DEFAULT.toString();
+        }
+
+        // check if there are only <= or = as operator and whether the right hand side only contains positive values
+        boolean onlyLeq = true;
+        boolean onlyEq = true;
+        boolean rightSidePositive = true;
+        for (Constraint constraint : program.getConstraints()) {
+            switch (constraint.getOperator()) {
+                case GEQ: return ProgramForm.DEFAULT.toString();
+                case LEQ:
+                    onlyEq = false;
+                    break;
+                case EQ:
+                    onlyLeq = false;
+                    break;
+            }
+
+            if (rightSidePositive && constraint.getRightHandSide() < 0.0) {
+                rightSidePositive = false;
+            }
+        }
+
+        if (!(onlyLeq || onlyEq)) {
+            return ProgramForm.DEFAULT.toString();
+        }
+
+        if (onlyLeq) {
+            return ProgramForm.STANDARD.toString();
+        } else { // only eq's
+            return (rightSidePositive ? ProgramForm.CANONICAL : ProgramForm.NORMAL).toString();
+        }
     }
 }

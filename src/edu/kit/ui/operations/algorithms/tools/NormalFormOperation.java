@@ -1,6 +1,13 @@
 package edu.kit.ui.operations.algorithms.tools;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.kit.model.ComparisonOperator;
+import edu.kit.model.Constraint;
 import edu.kit.model.LinearProgram;
+import edu.kit.model.ObjectiveFunction;
+import edu.kit.model.OptimizationDirection;
 import edu.kit.ui.exceptions.OperationException;
 import edu.kit.ui.logic.Operation;
 
@@ -17,7 +24,8 @@ public class NormalFormOperation extends Operation {
 
     @Override
     public String execute() throws OperationException {
-        // TODO
+        // if GetFormCommand == DEFAULT -> StandardFormCommand...
+        // else if GetFormCommand == Standard
 
         return SUCCESS;
     }
