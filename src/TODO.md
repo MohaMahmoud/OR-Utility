@@ -1,5 +1,6 @@
 ### Mohammad
-- [ ] Form für Normal und get max Form machen
+- [ ] getForm Operation clean machen.
+- [ ] Add und remove coefficient methode.
 
 ### High prio
 - [ ] Constraints to = function (mit Schlupfvariablen. Zur Abgrenzung die anderen Strukturvariablen nennen)

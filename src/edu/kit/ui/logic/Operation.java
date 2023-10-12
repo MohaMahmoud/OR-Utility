@@ -13,6 +13,14 @@ public abstract class Operation {
         this.description = description;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     @Override
     public String toString() {
         return name + " - " + description;

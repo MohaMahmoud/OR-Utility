@@ -10,9 +10,11 @@ public class GetFormOperation extends Operation {
 
     private final LinearProgram program;
 
+
     public GetFormOperation(LinearProgram program) {
         super(NAME, DESCRIPTION);
         this.program = program;
+
     }
 
     @Override
