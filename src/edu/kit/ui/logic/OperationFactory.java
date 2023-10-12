@@ -52,7 +52,7 @@ public class OperationFactory {
             // Tools used for algorithms.
             new GetFormOperation(program),
             new StandardFormOperation(program),
-            new NormalFormOperation(program, new StandardFormOperation(program)),
+            new NormalFormOperation(program, new StandardFormOperation(program), new GetFormOperation(program)),
 
             // algorithms.
             // library.add(new SimplexOperation(program));

@@ -41,4 +41,21 @@ public class ObjectiveFunction {
             decisionVariables.set(i, -decisionVariables.get(i));
         }
     }
+
+    public void updateLength(int newLength) {
+        int oldLength = decisionVariables.size();
+
+        if (oldLength < newLength) {
+            List<Double> updatedDecisionVariables = new ArrayList<>(decisionVariables);
+            for (int i = oldLength; i < newLength; i++) {
+                updatedDecisionVariables.add(0.0);
+            }
+            decisionVariables = updatedDecisionVariables;
+        } else if (oldLength > newLength) {
+            List<Double> updatedDecisionVariables = decisionVariables.subList(0, newLength);
+            decisionVariables = new ArrayList<>(updatedDecisionVariables);
+        }
+        // Do nothing if old length equals new length
+    }
+
 }

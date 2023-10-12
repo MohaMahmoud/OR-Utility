@@ -49,6 +49,22 @@ public class Constraint {
         if (rightHandSide != 0.0) rightHandSide = -rightHandSide;
     }
 
+    public void updateLength(int newLength) {
+        int oldLength = coefficients.size();
+
+        if (oldLength < newLength) {
+            List<Double> updatedDecisionVariables = new ArrayList<>(coefficients);
+            for (int i = oldLength; i < newLength; i++) {
+                updatedDecisionVariables.add(0.0);
+            }
+            coefficients = updatedDecisionVariables;
+        } else if (oldLength > newLength) {
+            List<Double> updatedDecisionVariables = coefficients.subList(0, newLength);
+            coefficients = new ArrayList<>(updatedDecisionVariables);
+        }
+        // Do nothing if old length equals new length
+    }
+
     public Constraint copy() {
         // Copy all coefficients.
         List<Double> copiedCoefficients = new ArrayList<>(coefficients.size());

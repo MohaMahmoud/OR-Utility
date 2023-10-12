@@ -20,8 +20,21 @@ public class LinearProgram {
         return variableCount;
     }
 
-    public void setVariableCount(int numVariables) {
-        this.variableCount = numVariables;
+    public void setVariableCount(int variableCount) {
+
+        if (variableCount != this.variableCount) {
+            // Update objective function.
+            objectiveFunction.updateLength(variableCount);
+
+            // Update constraints.
+            for (Constraint constraint : constraints) {
+                constraint.updateLength(variableCount);
+            }
+
+            // Update variable count.
+            this.variableCount = variableCount;
+        }
+
     }
 
     public ObjectiveFunction getObjectiveFunction() {
