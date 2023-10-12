@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import util.LinearProgramFormatter;
+import ui.util.StringUtility;
 
 public class LinearProgram {
     private int variableCount = 3;
@@ -32,6 +32,10 @@ public class LinearProgram {
         return Collections.unmodifiableList(constraints);
     }
 
+    public void setConstraints(List<Constraint> constraints) {
+        this.constraints = constraints;
+    }
+
     public void addConstraint(Constraint constraint) {
         constraints.add(constraint);
     }
@@ -42,6 +46,6 @@ public class LinearProgram {
 
     @Override
     public String toString() {
-        return LinearProgramFormatter.format(this);
+        return StringUtility.format(this);
     }
 }

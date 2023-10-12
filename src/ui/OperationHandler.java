@@ -7,17 +7,19 @@ import model.LinearProgram;
 
 public class OperationHandler {
     private static final String SEPARATOR = " ";
-    
-    private OperationFactory factory;
+
+    private final OperationFactory factory;
+    private final Scanner scanner;
     private boolean running = false;
 
-    public OperationHandler(LinearProgram linearProgram) {
-        this.factory = new OperationFactory(linearProgram);
+    public OperationHandler(LinearProgram program) {
+        this.scanner = new Scanner(System.in);
+        this.factory = new OperationFactory(this, program, scanner);
     }
 
     public void start() {
         running = true;
-        Scanner scanner = new Scanner(System.in);
+
         do {
             System.out.print("Enter desired operation: ");
             final String input = scanner.nextLine();
@@ -34,7 +36,7 @@ public class OperationHandler {
     private void executeOperation(String input) {        
         // Split the imput in command name and command arguments.
         String[] splitOperation = input.trim().split(SEPARATOR);
-        
+
         String name = splitOperation[0];
         String[] arguments = Arrays.copyOfRange(splitOperation, 1, splitOperation.length);
 

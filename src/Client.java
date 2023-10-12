@@ -1,5 +1,6 @@
 import model.LinearProgram;
 import ui.OperationHandler;
+import ui.util.StringUtility;
 
 /**
  * Entry point to the application. Initializes the command-line handler
@@ -10,6 +11,9 @@ import ui.OperationHandler;
  * @version 1.1
  */
 public class Client {
+    private Client() throws IllegalAccessException {
+        throw new IllegalAccessException(StringUtility.UTILITY_CLASS_INSTANTIATION);
+    }
 
     /**
      * Main method of the program.

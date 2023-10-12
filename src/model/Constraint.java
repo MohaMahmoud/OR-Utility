@@ -1,4 +1,5 @@
 package model;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,6 +43,17 @@ public class Constraint {
         }
 
         // Negate the right hand side.
-        rightHandSide = -rightHandSide;
+        if (rightHandSide != 0.0) rightHandSide = -rightHandSide;
+    }
+
+    public Constraint copy() {
+        // Copy all coefficients.
+        List<Double> copiedCoefficients = new ArrayList<>(coefficients.size());
+        for (Double coefficient : coefficients) {
+            copiedCoefficients.add(Double.valueOf(coefficient));
+        }
+
+        // Return the deep copy.
+        return new Constraint(copiedCoefficients, this.operator, this.rightHandSide);
     }
 }
