@@ -44,6 +44,50 @@ public class LinearProgram {
         constraints.remove(index);
     }
 
+    /*
+    private boolean areAllSoloConstraintsGeq() {
+        for (SoloConstraint soloConstraint : constraints) {
+            if (!soloConstraint.getOperator().equals(ComparisonOperator.GEQ)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    */
+
+    public ProgramForm getForm() {
+        // if its a min objective function or solo constraints are not all >=
+        if (objectiveFunction.getDirection().equals(OptimizationDirection.MIN) /* TODO || !areAllSoloConstraintsGeq()*/) {
+            return ProgramForm.DEFAULT;
+        }
+
+        // check if there are only <= or = as operator and whether the right hand side only contains positive values
+        boolean onlyLeq = true;
+        boolean onlyEq = true;
+        boolean rightSidePositive = true;
+        for (Constraint constraint : constraints) {
+            switch (constraint.getOperator()) {
+                case ComparisonOperator.GEQ: return ProgramForm.DEFAULT;
+                case ComparisonOperator.LEQ: onlyEq = false;
+                case ComparisonOperator.EQ: onlyLeq = false;
+            }
+
+            if (rightSidePositive && constraint.getRightHandSide() < 0.0) {
+                rightSidePositive = false;
+            }
+        }
+
+        if (!(onlyLeq || onlyEq)) {
+            return ProgramForm.DEFAULT;
+        }
+
+        if (onlyLeq) {
+            return ProgramForm.Standard;
+        } else { // only eq's
+            return (rightSidePositive) ? ProgramForm.CANONICAL : ProgramForm.NORMAL;
+        }
+    }
+
     @Override
     public String toString() {
         return StringUtility.format(this);

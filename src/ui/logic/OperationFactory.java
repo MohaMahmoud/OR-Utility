@@ -28,19 +28,23 @@ public class OperationFactory {
     }
 
     private void initializeOperations(OperationHandler handler, LinearProgram program, Scanner scanner) {
+        // Linear program configs
+        operations.put("/show", new ShowOperation(program));
+        operations.put("/changevariablecount", new ChangeVariableCountOperation(program, scanner));
+        //operations.put("/changeobjectivefunction", null);
+        operations.put("/addconstraint", new AddConstraintOperation(program, scanner));
+        operations.put("/removeconstraint", new RemoveConstraintOperation(program, scanner));
+        // ...
+        // ...
+        // ...
+
+        // Algorithmic commands
+        operations.put("/standardform", new StandardFormOperation(program));
+
         // Used primarly for testing.
         operations.put("/dummydata", new DummyDataOperation(program));
 
-        // User commands.
-        operations.put("/addconstraint", new AddConstraintOperation(program, scanner));
-        operations.put("/removeconstraint", new RemoveConstraintOperation(program, scanner));
-        operations.put("/changevariablecount", new ChangeVariableCountOperation(program, scanner));
-        //operations.put("/changeobjectivefunction", null);
-        // ...
-        // ...
-        // ...
-        operations.put("/standardform", new StandardFormOperation(program));
-        operations.put("/show", new ShowOperation(program));
+        //
         operations.put("/help", new HelpOperation(operations.values()));
         operations.put("/exit", new ExitOperation(handler));
         // TODO Check the order if it makes sense.

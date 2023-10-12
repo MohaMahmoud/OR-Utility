@@ -53,6 +53,23 @@ public class StandardFormOperation extends Operation {
 
         // Update the new constraints in the linear program.
         program.setConstraints(constrains);
+
+        /*
+        // Change all solo constraints to >=
+        List<Constraint> refactoredSoloConstraints = new ArrayList<>();
+        for (Constraint constraint : program.getSoloConstraints()) {
+            switch (constraint.getOperator()) {
+                case ComparisonOperator.LEQ:
+                    // TODO error
+                    break
+                case ComparisonOperator.EQ:
+                    // TODO x = x- + x+
+            }
+            refactoredSoloConstraints.add(constraint);
+        }
+        program.setSoloConstraints(refactoredConstraints);
+        */
+
         return SUCCESS;
     }
 }
