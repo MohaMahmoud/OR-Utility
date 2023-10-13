@@ -1,32 +1,32 @@
-package ui.commands;
+package edu.kit.ui.operations.testing;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import model.ComparisonOperator;
-import model.Constraint;
-import model.LinearProgram;
+import edu.kit.model.ComparisonOperator;
+import edu.kit.model.Constraint;
+import edu.kit.model.LinearProgram;
+import edu.kit.ui.exceptions.OperationException;
+import edu.kit.ui.logic.Operation;
 
-public class AddDummyCommand extends CommandExecutor {
-    private LinearProgram linearProgram;
+public class DummyDataOperation extends Operation {
+    private static final String NAME = "/dummydata";
+    private static final String DESCRIPTION = "Adds dummy data to the linear program.";
 
-    public AddDummyCommand(LinearProgram linearProgram) {
-        this.linearProgram = linearProgram;
+    private final LinearProgram program;
+
+    public DummyDataOperation(LinearProgram program) {
+        super(NAME, DESCRIPTION);
+        this.program = program;
     }
 
     @Override
-    public void execute() {
-        linearProgram.setVariableCount(6);
-        linearProgram.getObjectiveFunction().setDecisionVariables(Arrays.asList(1.2, -2.0, 0.0, 3.0, -1.0, 1.5));
+    public String execute() throws OperationException {
+        program.setVariableCount(6);
+        program.getObjectiveFunction().setDecisionVariables(Arrays.asList(1.2, -2.0, 0.0, 3.0, -1.0, 1.5));
 
         // Constraints
-        addConstraintDirectly("1.0 2.5 0.0 0.0 1.5 3.3 = 10.5");
-        addConstraintDirectly("0.0 0.0 1.8 -4.7 0.0 2.2 >= 5.3");
-        addConstraintDirectly("3.2 1.1 0.0 -2.4 0.0 0.0 = 12.7");
-        addConstraintDirectly("-1.6 0.0 2.9 0.0 -1.8 0.0 <= 8.6");
-        addConstraintDirectly("0.0 0.0 0.0 0.0 0.0 0.0 >= -5.2");
-        addConstraintDirectly("1.7 1.6 1.5 1.4 1.3 1.2 <= 20.0");
         addConstraintDirectly("-2.2 0.0 0.0 1.9 -2.1 0.0 >= 7.4");
         addConstraintDirectly("0.0 3.7 -2.8 0.0 0.0 1.9 <= 6.5");
         addConstraintDirectly("1.3 -1.7 0.0 0.0 0.0 -1.2 = 4.9");
@@ -38,12 +38,13 @@ public class AddDummyCommand extends CommandExecutor {
         addConstraintDirectly("0.0 0.0 0.0 0.0 0.0 0.0 <= -5.9"); // Right-hand side negative, all variables zero
         addConstraintDirectly("-1.2 0.0 0.0 0.0 0.0 0.0 = 3.8"); // Right-hand side positive, one variable non-zero
                                                                  // (negative coefficient)
+        return SUCCESS;
     }
 
     private void addConstraintDirectly(String constraintString) {
         String[] commandParts = constraintString.split(" ");
 
-        int numCoefficients = linearProgram.getVariableCount();
+        int numCoefficients = program.getVariableCount();
         List<Double> coefficients = new ArrayList<>();
 
         for (int i = 0; i < numCoefficients; i++) {
@@ -63,8 +64,7 @@ public class AddDummyCommand extends CommandExecutor {
             try {
                 double rightHandSide = Double.parseDouble(commandParts[numCoefficients + 1]);
                 Constraint constraint = new Constraint(coefficients, operator, rightHandSide);
-                linearProgram.addConstraint(constraint);
-                System.out.println("Constraint added successfully.");
+                program.addConstraint(constraint);
             } catch (NumberFormatException e) {
                 System.out.println("Invalid right-hand side value. Use a numeric value.");
             }

@@ -1,4 +1,5 @@
-package model;
+package edu.kit.model;
+
 public enum ProgramForm {
     DEFAULT("Default"),
     STANDARD("Standard"),

@@ -1,4 +1,4 @@
-package model;
+package edu.kit.model;
 public enum OptimizationDirection {
     MAX("(MAX)"),
     MIN("(MIN)");

@@ -1,4 +1,5 @@
-package model;
+package edu.kit.model;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,6 +18,9 @@ public class Constraint {
         return Collections.unmodifiableList(coefficients);
     }
 
+    public void setCoefficients(List<Double> coefficients) {
+        this.coefficients = coefficients;
+    }
 
     public double getRightHandSide() {
         return rightHandSide;
@@ -42,16 +46,33 @@ public class Constraint {
         }
 
         // Negate the right hand side.
-        rightHandSide = -rightHandSide;
+        if (rightHandSide != 0.0) rightHandSide = -rightHandSide;
+    }
+
+    public void updateLength(int newLength) {
+        int oldLength = coefficients.size();
+
+        if (oldLength < newLength) {
+            List<Double> updatedDecisionVariables = new ArrayList<>(coefficients);
+            for (int i = oldLength; i < newLength; i++) {
+                updatedDecisionVariables.add(0.0);
+            }
+            coefficients = updatedDecisionVariables;
+        } else if (oldLength > newLength) {
+            List<Double> updatedDecisionVariables = coefficients.subList(0, newLength);
+            coefficients = new ArrayList<>(updatedDecisionVariables);
+        }
+        // Do nothing if old length equals new length
     }
 
     public Constraint copy() {
-        List<Double> copiedCoefficients = new ArrayList<>(coefficients);
-        ComparisonOperator copiedOperator = operator;
-        double copiedRightHandSide = rightHandSide;
+        // Copy all coefficients.
+        List<Double> copiedCoefficients = new ArrayList<>(coefficients.size());
+        for (Double coefficient : coefficients) {
+            copiedCoefficients.add(Double.valueOf(coefficient));
+        }
 
-        // Create and return a new Constraint instance with copied values
-        return new Constraint(copiedCoefficients, copiedOperator, copiedRightHandSide);
+        // Return the deep copy.
+        return new Constraint(copiedCoefficients, this.operator, this.rightHandSide);
     }
-
 }
