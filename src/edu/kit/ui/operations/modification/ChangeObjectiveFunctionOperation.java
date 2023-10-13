@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import edu.kit.model.ComparisonOperator;
+import edu.kit.model.DecisionVariable;
 import edu.kit.model.LinearProgram;
 import edu.kit.model.OptimizationDirection;
 import edu.kit.ui.exceptions.OperationException;
@@ -30,10 +32,12 @@ public class ChangeObjectiveFunctionOperation extends Operation {
 
         // Parse user input.
         final String[] input = scanner.nextLine().split(StringUtility.SPACE);
-        List<Double> decisionVariables = new ArrayList<>();
+        List<DecisionVariable> decisionVariables = new ArrayList<>();
         for (String decisionVariable : input) {
+            int c = 0;
             try {
-                decisionVariables.add(Double.parseDouble(decisionVariable));
+                decisionVariables.add(new DecisionVariable(c, Double.parseDouble(decisionVariable), ComparisonOperator.GEQ));
+                c++;
             } catch (NumberFormatException exception) {
                 throw new OperationException("Invalid input. Use only numeric values.");
             }

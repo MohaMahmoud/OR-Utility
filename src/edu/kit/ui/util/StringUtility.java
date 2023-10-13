@@ -1,11 +1,9 @@
 package edu.kit.ui.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import edu.kit.model.ComparisonOperator;
-import edu.kit.model.Constraint;
-import edu.kit.model.LinearProgram;
-import edu.kit.model.ObjectiveFunction;
+import edu.kit.model.*;
 
 public final class StringUtility {
     /**
@@ -54,8 +52,11 @@ public final class StringUtility {
 
         // Format the constrains.
         if (!constraints.isEmpty()) {
-            formatContrains(builder, colWidths, label, constraints);
+            formatContraints(builder, colWidths, label, constraints);
         }
+
+        // Format solo constraints.
+        formatDecisionVariables(builder, function.getDecisionVariables());
 
         return builder.toString().trim();
     }
@@ -65,12 +66,12 @@ public final class StringUtility {
         builder.append(SPACE.repeat(label - OBJECTIVE_FUNCTION_PREFIX.length()));
 
         // Format the cells of all the coefficients.
-        List<Double> coefficients = function.getDecisionVariables();
+        List<Double> coefficients = function.getCoefficients();
         formatCoefficients(builder, coefficients, colWidths);
         builder.append(function.getDirection().toString());
     }
 
-    private static void formatContrains(StringBuilder builder, int[] colWidths, int label, List<Constraint> constraints) {
+    private static void formatContraints(StringBuilder builder, int[] colWidths, int label, List<Constraint> constraints) {
         // Add space after the objective function.
         builder.append(BR).append(BR);
 
@@ -100,15 +101,69 @@ public final class StringUtility {
         }
     }
 
+    private static final String SOLOCONSTRAINTSEPARATOR = ", ";
+    private static final String COEFFICIENT = "x";
+    private static final String NEGATIVE_MARKED = "-";
+    private static final String POSITIVE_MARKED = "+";
+    private static void formatDecisionVariables(StringBuilder builder, List<DecisionVariable> decisionVariables) {
+        // Split constraints up in <=, >= and =
+        StringBuilder leqSoloConstraints = new StringBuilder();
+        StringBuilder geqSoloConstraints = new StringBuilder();
+        StringBuilder eqSoloConstraints = new StringBuilder();
+        for (DecisionVariable decisionVariable : decisionVariables) {
+            switch (decisionVariable.getOperator()) {
+                case GEQ:
+                    formatCoefficient(geqSoloConstraints, decisionVariable);
+                    break;
+                case LEQ:
+                    formatCoefficient(leqSoloConstraints, decisionVariable);
+                    break;
+                case EQ:
+                    if (!decisionVariable.isSplit()) {
+                        formatCoefficient(eqSoloConstraints, decisionVariable);
+                    } else {
+                        // x = x+ - x- (both positive)
+                        formatCoefficient(geqSoloConstraints, decisionVariable);
+                        builder.append(POSITIVE_MARKED);
+                        formatCoefficient(geqSoloConstraints, decisionVariable);
+                        builder.append(NEGATIVE_MARKED);
+                    }
+                    break;
+            }
+        }
+
+        // Append SoloConstraints grouped by operator.
+        formatSoloConstraintLine(builder, geqSoloConstraints, ComparisonOperator.GEQ);
+        formatSoloConstraintLine(builder, leqSoloConstraints, ComparisonOperator.LEQ);
+        formatSoloConstraintLine(builder, eqSoloConstraints, ComparisonOperator.EQ);
+    }
+
+    private static void formatCoefficient(StringBuilder soloConstraintGroup, DecisionVariable decisionVariable) {
+        if (!soloConstraintGroup.isEmpty()) {
+            soloConstraintGroup.append(SOLOCONSTRAINTSEPARATOR);
+        }
+        soloConstraintGroup.append(COEFFICIENT);
+        soloConstraintGroup.append(decisionVariable.getIndex());
+        if (decisionVariable.isNegated()) {
+            soloConstraintGroup.append(NEGATIVE_MARKED);
+        }
+    }
+    private static void formatSoloConstraintLine(StringBuilder builder, StringBuilder groupedConstraints, ComparisonOperator operator) {
+        if (!groupedConstraints.isEmpty()) {
+            builder.append(BR).append(groupedConstraints).append(SPACE).append(operator).append(SPACE).append(0);
+        }
+    }
+
     private static int[] calcColWidths(LinearProgram program) {
         // Adding 1 to length for the right hand side.
         int[] colWidths = new int[program.getVariableCount() + 1];
 
         // Filling column widths widths of the objective function.
-        List<Double> coefficients = program.getObjectiveFunction().getDecisionVariables();
+        List<DecisionVariable> coefficients = program.getObjectiveFunction().getDecisionVariables();
+        // TODO decision variable split?
         if (!coefficients.isEmpty()) {
             for (int i = 0; i < program.getVariableCount(); i++) {
-                String formattedCoefficient = removeTailingZeros(coefficients.get(i), true);
+                String formattedCoefficient = removeTailingZeros(coefficients.get(i).getCoefficient(), true);
                 colWidths[i] = formattedCoefficient.length();
             }
         }
@@ -128,11 +183,11 @@ public final class StringUtility {
         return colWidths;
     }
 
-    private static void formatCoefficients(StringBuilder builder, List<Double> coefficients, int[] colWidths) {
-        for (int j = 0; j < coefficients.size(); j++) {
+    private static void formatCoefficients(StringBuilder builder, List<Double> decisionVariables, int[] colWidths) {
+        for (int j = 0; j < decisionVariables.size(); j++) {
             // Format each cell of the left hand side.
-            formatCell(builder, coefficients.get(j), colWidths[j], false);
-            if (j < coefficients.size() - 1) {
+            formatCell(builder, decisionVariables.get(j), colWidths[j], false);
+            if (j < decisionVariables.size() - 1) {
                 builder.append(SEPARATOR);
             } else {
                 builder.append(SPACE);

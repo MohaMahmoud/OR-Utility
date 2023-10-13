@@ -3,11 +3,7 @@ package edu.kit.ui.operations.algorithms.tools;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.kit.model.ComparisonOperator;
-import edu.kit.model.Constraint;
-import edu.kit.model.LinearProgram;
-import edu.kit.model.ObjectiveFunction;
-import edu.kit.model.OptimizationDirection;
+import edu.kit.model.*;
 import edu.kit.ui.exceptions.OperationException;
 import edu.kit.ui.logic.Operation;
 
@@ -30,8 +26,16 @@ public class StandardFormOperation extends Operation {
         if (function.getDirection().equals(OptimizationDirection.MIN))
             function.negate();
 
+        modifyConstraints();
+
+        modifyDecisionVariables();
+
+        return SUCCESS;
+    }
+
+    private void modifyConstraints() {
         // Change all constrains to <=.
-        List<Constraint> constrains = new ArrayList<>();
+        List<Constraint> constraints = new ArrayList<>();
         for (Constraint constraint : program.getConstraints()) {
             switch (constraint.getOperator()) {
                 case GEQ:
@@ -43,17 +47,48 @@ public class StandardFormOperation extends Operation {
                     Constraint geqConstraint = constraint.copy();
                     geqConstraint.setOperator(ComparisonOperator.GEQ);
                     geqConstraint.negate();
-                    constrains.add(geqConstraint);
+                    constraints.add(geqConstraint);
                     break;
                 default:
                     break;
             }
-            constrains.add(constraint);
+            constraints.add(constraint);
         }
 
         // Update the new constraints in the linear program.
-        program.setConstraints(constrains);
+        program.setConstraints(constraints);
+    }
 
-        return SUCCESS;
+    private void modifyDecisionVariables() {
+        ObjectiveFunction objectiveFunction = program.getObjectiveFunction();
+        if (!objectiveFunction.areThereOnlyGeqSoloConstraints()) {
+            List<DecisionVariable> decisionVariables = objectiveFunction.getDecisionVariables();
+
+            for (int i = 0; i < decisionVariables.size(); i++) {
+                DecisionVariable decisionVariable = decisionVariables.get(i);
+                switch (decisionVariable.getOperator()) {
+                    case LEQ:
+                        decisionVariable.negateLeq();
+                        for (Constraint constraint : program.getConstraints()) {
+                            double oldCoefficient = constraint.getCoefficients().get(i);
+                            decisionVariables.set(i, -oldCoefficient);
+                        }
+                        break;
+                    case EQ:
+                        // split constraint in <= and >=. x = x+ - x-
+                        // TODO dadurch gibt es eine Variable mehr, überlegen wie wir damit umgehen (kennzeichnen bei der Objective Function und den Constraints?)
+                        /*soloConstraint.setOperator(ComparisonOperator.LEQ);
+                        SoloConstraint geqSoloConstraint = soloConstraint.copy();
+                        geqSoloConstraint.setOperator(ComparisonOperator.GEQ);
+                        soloConstraints.add(geqSoloConstraint);
+                        soloConstraint.negateLeq();*/
+                        // TODO in allen constraints und in der Objective Function ändern
+                        break;
+                    default:
+                        break;
+                }
+                decisionVariables.add(decisionVariable);
+            }
+        }
     }
 }

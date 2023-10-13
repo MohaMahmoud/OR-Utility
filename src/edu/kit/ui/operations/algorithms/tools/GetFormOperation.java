@@ -4,6 +4,8 @@ import edu.kit.model.*;
 import edu.kit.ui.exceptions.OperationException;
 import edu.kit.ui.logic.Operation;
 
+import java.util.List;
+
 public class GetFormOperation extends Operation {
     private static final String NAME = "/getform";
     private static final String DESCRIPTION = "Returns the highest form of the linear program.";
@@ -19,8 +21,9 @@ public class GetFormOperation extends Operation {
 
     @Override
     public String execute() throws OperationException {
+        ObjectiveFunction objectiveFunction = program.getObjectiveFunction();
         // if its a min objective function or solo constraints are not all >=
-        if (program.getObjectiveFunction().getDirection().equals(OptimizationDirection.MIN)) {
+        if (objectiveFunction.getDirection().equals(OptimizationDirection.MIN) || !objectiveFunction.areThereOnlyGeqSoloConstraints()) {
             return ProgramForm.DEFAULT.toString();
         }
 

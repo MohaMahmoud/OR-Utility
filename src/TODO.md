@@ -9,6 +9,7 @@
 - [X] Finish standard from command
 - [X] Constraint negation
 - [X] getForm()
+- [ ] SoloConstraints doch einbauen (bei <= 0 -> Substituieren mit -SoloConstraint (ÜB 2))
 
 ### Medium prio
 - [ ] Add usage info in README.md and command-line for commands
@@ -17,6 +18,8 @@
 
 ### Low prio
 - [ ] x1, x2, ... xn Spalte bei /show
+- [ ] right align solo constraints (/show)
+- [ ] SoloConstraint in DecisionVariable umbennenen
 
 
 ### Ideen

@@ -6,21 +6,30 @@ import java.util.List;
 
 public class ObjectiveFunction {
     private OptimizationDirection direction;
-    private List<Double> decisionVariables;
+    private List<DecisionVariable> decisionVariables;
+
 
     public ObjectiveFunction(OptimizationDirection direction, int variableCount) {
         this.direction = direction;
         this.decisionVariables = new ArrayList<>(variableCount);
         for (int i = 0; i < variableCount; i++) {
-            decisionVariables.add(0.0);
+            decisionVariables.add(new DecisionVariable(i, 0.0, ComparisonOperator.GEQ));
         }
     }
 
-    public List<Double> getDecisionVariables() {
+    public List<DecisionVariable> getDecisionVariables() {
         return Collections.unmodifiableList(decisionVariables);
     }
 
-    public void setDecisionVariables(List<Double> decisionVariables) {
+    public List<Double> getCoefficients() {
+        List<Double> coefficients = new ArrayList<>();
+        for (DecisionVariable variable : decisionVariables) {
+            coefficients.add(variable.getCoefficient());
+        }
+        return coefficients;
+    }
+
+    public void setDecisionVariables(List<DecisionVariable> decisionVariables) {
         this.decisionVariables = decisionVariables;
     }
 
@@ -38,7 +47,8 @@ public class ObjectiveFunction {
 
         // Negate all the decision variables.
         for (int i = 0; i < decisionVariables.size(); i++) {
-            decisionVariables.set(i, -decisionVariables.get(i));
+            DecisionVariable decisionVariable = decisionVariables.get(i);
+            decisionVariable.setCoefficient(-decisionVariable.getCoefficient());
         }
     }
 
@@ -46,16 +56,25 @@ public class ObjectiveFunction {
         int oldLength = decisionVariables.size();
 
         if (oldLength < newLength) {
-            List<Double> updatedDecisionVariables = new ArrayList<>(decisionVariables);
+            List<DecisionVariable> updatedDecisionVariables = new ArrayList<>(decisionVariables);
             for (int i = oldLength; i < newLength; i++) {
-                updatedDecisionVariables.add(0.0);
+                updatedDecisionVariables.add(new DecisionVariable(i, 0.0, ComparisonOperator.GEQ));
             }
             decisionVariables = updatedDecisionVariables;
         } else if (oldLength > newLength) {
-            List<Double> updatedDecisionVariables = decisionVariables.subList(0, newLength);
+            List<DecisionVariable> updatedDecisionVariables = decisionVariables.subList(0, newLength);
             decisionVariables = new ArrayList<>(updatedDecisionVariables);
         }
         // Do nothing if old length equals new length
+    }
+
+    public boolean areThereOnlyGeqSoloConstraints() {
+        for (DecisionVariable decisionVariable : decisionVariables) {
+            if (!decisionVariable.getOperator().equals(ComparisonOperator.GEQ)){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

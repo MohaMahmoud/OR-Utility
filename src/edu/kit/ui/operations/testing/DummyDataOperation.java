@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.kit.model.ComparisonOperator;
 import edu.kit.model.Constraint;
+import edu.kit.model.DecisionVariable;
 import edu.kit.model.LinearProgram;
 import edu.kit.ui.exceptions.OperationException;
 import edu.kit.ui.logic.Operation;
@@ -24,7 +25,16 @@ public class DummyDataOperation extends Operation {
     @Override
     public String execute() throws OperationException {
         program.setVariableCount(6);
-        program.getObjectiveFunction().setDecisionVariables(Arrays.asList(1.2, -2.0, 0.0, 3.0, -1.0, 1.5));
+        ComparisonOperator defaultOperator = ComparisonOperator.GEQ;
+        program.getObjectiveFunction().setDecisionVariables(Arrays.asList(
+            new DecisionVariable(0, 1.2, defaultOperator),
+            new DecisionVariable(1, -2, defaultOperator),
+            new DecisionVariable(2, 0, ComparisonOperator.LEQ),
+            new DecisionVariable(3, 3, defaultOperator),
+            new DecisionVariable(4, -1, ComparisonOperator.EQ),
+            new DecisionVariable(5, 1.5, defaultOperator)
+            )
+        );
 
         // Constraints
         addConstraintDirectly("-2.2 0.0 0.0 1.9 -2.1 0.0 >= 7.4");

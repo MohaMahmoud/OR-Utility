@@ -31,6 +31,20 @@ public class LinearProgram {
                 constraint.updateLength(variableCount);
             }
 
+            // Update decision variables.
+            List<DecisionVariable> decisionVariables = objectiveFunction.getDecisionVariables();
+            int oldVariableCount = decisionVariables.size();
+
+            if (oldVariableCount < variableCount) {
+                List<DecisionVariable> updatedDecisionVariables = new ArrayList<DecisionVariable>(decisionVariables);
+                for (int i = oldVariableCount; i < variableCount; i++) {
+                    updatedDecisionVariables.add(new DecisionVariable(i, 0.0, ComparisonOperator.GEQ));
+                }
+                decisionVariables = updatedDecisionVariables;
+            } else if (oldVariableCount > variableCount) {
+                decisionVariables = decisionVariables.subList(0, variableCount);
+            }
+
             // Update variable count.
             this.variableCount = variableCount;
         }
