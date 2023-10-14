@@ -4,36 +4,48 @@ import edu.kit.model.*;
 import edu.kit.ui.exceptions.OperationException;
 import edu.kit.ui.logic.Operation;
 
-import java.util.List;
-
+/**
+ * An operation to determine the form of a linear program.
+ */
 public class GetFormOperation extends Operation {
     private static final String NAME = "/getform";
     private static final String DESCRIPTION = "Returns the highest form of the linear program.";
 
     private final LinearProgram program;
 
-
+    /**
+     * Constructs a GetFormOperation with the specified linear program.
+     *
+     * @param program The linear program to analyze.
+     */
     public GetFormOperation(LinearProgram program) {
         super(NAME, DESCRIPTION);
         this.program = program;
-
     }
 
+    /**
+     * Execute the operation and return the highest form of the linear program.
+     *
+     * @return The highest form of the linear program.
+     * @throws OperationException If an error occurs during execution.
+     */
     @Override
     public String execute() throws OperationException {
         ObjectiveFunction objectiveFunction = program.getObjectiveFunction();
-        // if its a min objective function or solo constraints are not all >=
-        if (objectiveFunction.getDirection().equals(OptimizationDirection.MIN) || !objectiveFunction.areThereOnlyGeqSoloConstraints()) {
+
+        // Check if it's a minimization objective function or solo constraints are not all >= or =.
+        if (objectiveFunction.getDirection().equals(OptimizationDirection.MIN) || objectiveFunction.areThereLeqSoloConstraints()) {
             return ProgramForm.DEFAULT.toString();
         }
 
-        // check if there are only <= or = as operator and whether the right hand side only contains positive values
+        // Check if there are only <= or = as operators and whether the right-hand side only contains positive values.
         boolean onlyLeq = true;
         boolean onlyEq = true;
         boolean rightSidePositive = true;
         for (Constraint constraint : program.getConstraints()) {
             switch (constraint.getOperator()) {
-                case GEQ: return ProgramForm.DEFAULT.toString();
+                case GEQ:
+                    return ProgramForm.DEFAULT.toString();
                 case LEQ:
                     onlyEq = false;
                     break;
@@ -53,8 +65,9 @@ public class GetFormOperation extends Operation {
 
         if (onlyLeq) {
             return ProgramForm.STANDARD.toString();
-        } else { // only eq's
+        } else { // Only eq's
             return (rightSidePositive ? ProgramForm.CANONICAL : ProgramForm.NORMAL).toString();
         }
     }
 }
+
