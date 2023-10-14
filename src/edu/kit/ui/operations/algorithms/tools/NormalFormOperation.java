@@ -57,7 +57,7 @@ public class NormalFormOperation extends Operation {
         List<Constraint> constraints = program.getConstraints();
         final int slackVariableCount = constraints.size();
         final int oldVariableCount = program.getVariableCount();
-        program.setVariableCount(slackVariableCount + program.getVariableCount());
+        program.addSlackVariables(slackVariableCount);
 
         // Put ones on the diagonal of the appended zeros matrix to turn it into a identity matrix.
         for (int i = 0; i < slackVariableCount; i++) {

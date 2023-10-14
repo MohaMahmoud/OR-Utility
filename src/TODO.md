@@ -9,22 +9,29 @@
 - [X] Finish standard from command
 - [X] Constraint negation
 - [X] getForm()
-- [ ] SoloConstraints doch einbauen (bei <= 0 -> Substituieren mit -SoloConstraint (ÜB 2))
+- [X] SoloConstraints doch einbauen (bei <= 0 -> Substituieren mit -SoloConstraint (ÜB 2))
+- [ ] keine modification operations nach NormalFormOperation (Simplex etc. erst mit NormalForm möglich!
+- [ ] Befehl um das lineare Program final zu bestätigen, um NormalFormOperation, Simplex etc freizuschalten...
 
 ### Medium prio
-- [ ] Add usage info in README.md and command-line for commands
 - [X] SoloConstraints integration in /show -> x1, x2... xn >= 0
-- [ ] Make the AddConstraint command useable with one line: /addconstraint 1 2 3 <= 4 (habe es schon damals so gemacht, man könnte die Lösung aus einer früheren Version nehmen)
+- [X] Unterscheidung zwischen Slack und Normalen Variablen (auch bei show)
 
 ### Low prio
-- [X] x1, x2, ... xn Zeile bei /show
 - [ ] right align Nichtnegativitätsbedingungen (/show)
+- [ ] Add usage info in README.md and command-line for commands
+- [ ] Make the AddConstraint command useable with one line: /addconstraint 1 2 3 <= 4 (habe es schon damals so gemacht, man könnte die Lösung aus einer früheren Version nehmen)
 - [X] SoloConstraint in DecisionVariable umbennenen
+- [X] x1, x2, ... xn Zeile bei /show
 
 
 ### Ideen
-- grafische Lösung (Zukunft)
 - SetColumn Befehl?
+
+
+
+### Für die Zukunft
+- grafische Lösung
 
 
 ### Wichtige Begriffe

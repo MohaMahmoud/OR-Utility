@@ -21,6 +21,7 @@ public final class StringUtility {
 
     private static final String SEPARATOR = " | ";
     private static final String DECISION_VARIABLE = "x";
+    private static final String SLACK_VARIABLE = "s";
     private static final String NEGATIVE = "-";
     private static final String POSITIVE = "+";
     private static final String DECISION_VARIABLE_SEPARATOR = ", ";
@@ -65,7 +66,7 @@ public final class StringUtility {
             formatConstraints(builder, colWidths, label, constraints);
         }
         // x1, x2, ... x3 >= 0
-        formatSoloConstraints(builder, function.getDecisionVariables());
+        formatSoloConstraints(builder, function);
 
         return builder.toString();
     }
@@ -85,7 +86,7 @@ public final class StringUtility {
         // Format the cells of all the coefficients.
         List<DecisionVariable> decisionVariables = function.getDecisionVariables();
         for (int i = 0; i < decisionVariables.size(); i++) {
-            builder.append(String.format("%" + colWidths[i] + "s", getDecisionVariableAsString(decisionVariables.get(i), i)));
+            builder.append(String.format("%" + colWidths[i] + "s", getDecisionVariableAsString(decisionVariables.get(i), i, function)));
             builder.append(SPACE.repeat(SEPARATOR.length()));
         }
     }
@@ -150,28 +151,31 @@ public final class StringUtility {
      * @param builder            The StringBuilder to which the formatted string is appended.
      * @param decisionVariables  The list of decision variables.
      */
-    private static void formatSoloConstraints(StringBuilder builder, List<DecisionVariable> decisionVariables) {
+    private static void formatSoloConstraints(StringBuilder builder, ObjectiveFunction function) {
         // Split constraints up into <=, >=, and = constraints and create a separat line for each of them.
         StringBuilder leqSoloConstraints = new StringBuilder();
         StringBuilder geqSoloConstraints = new StringBuilder();
         StringBuilder eqSoloConstraints = new StringBuilder();
 
-        for (DecisionVariable decisionVariable : decisionVariables) {
+        // not reachable
+        int indexOfFirstSlackVariable = function.getAmountOfStructureVariables();
+
+        for (DecisionVariable decisionVariable : function.getDecisionVariables()) {
             switch (decisionVariable.getOperator()) {
                 case GEQ:
-                    formatSoloCoefficient(geqSoloConstraints, decisionVariable);
+                    formatSoloCoefficient(geqSoloConstraints, decisionVariable, indexOfFirstSlackVariable);
                     break;
                 case LEQ:
-                    formatSoloCoefficient(leqSoloConstraints, decisionVariable);
+                    formatSoloCoefficient(leqSoloConstraints, decisionVariable, indexOfFirstSlackVariable);
                     break;
                 case EQ:
                     if (!decisionVariable.isSplit()) {
-                        formatSoloCoefficient(eqSoloConstraints, decisionVariable);
+                        formatSoloCoefficient(eqSoloConstraints, decisionVariable, indexOfFirstSlackVariable);
                     } else {
                         // x = 0 -> = x+ - x- -> x+, x- >= 0
-                        formatSoloCoefficient(geqSoloConstraints, decisionVariable);
+                        formatSoloCoefficient(geqSoloConstraints, decisionVariable, indexOfFirstSlackVariable);
                         geqSoloConstraints.append(POSITIVE);
-                        formatSoloCoefficient(geqSoloConstraints, decisionVariable);
+                        formatSoloCoefficient(geqSoloConstraints, decisionVariable, indexOfFirstSlackVariable);
                         geqSoloConstraints.append(NEGATIVE);
                     }
                     break;
@@ -236,18 +240,27 @@ public final class StringUtility {
      * @param soloConstraintGroup The StringBuilder to which the formatted string is appended.
      * @param decisionVariable    The decision variable.
      */
-    private static void formatSoloCoefficient(StringBuilder soloConstraintGroup, DecisionVariable decisionVariable) {
+    private static void formatSoloCoefficient(StringBuilder soloConstraintGroup, DecisionVariable decisionVariable, int indexOfFirstSlackVariable) {
+        int displayIndex = decisionVariable.getIndex() + 1;
         // If its not the first coefficient in the list, add separator.
         if (!soloConstraintGroup.isEmpty()) {
             soloConstraintGroup.append(DECISION_VARIABLE_SEPARATOR);
         }
 
-        soloConstraintGroup.append(DECISION_VARIABLE);
-        // +1 so it starts with x1 instead of x0
-        soloConstraintGroup.append(decisionVariable.getIndex() + 1);
-        // x1-
-        if (decisionVariable.isNegated()) {
-            soloConstraintGroup.append(NEGATIVE);
+        int index = decisionVariable.getIndex();
+        if (index < indexOfFirstSlackVariable) {
+            soloConstraintGroup.append(DECISION_VARIABLE);
+
+            // +1 so it starts with x1 instead of x0
+            soloConstraintGroup.append(displayIndex);
+            // x1-
+            if (decisionVariable.isNegated()) {
+                soloConstraintGroup.append(NEGATIVE);
+            }
+        } else {
+            // if its a slack variable
+            soloConstraintGroup.append(SLACK_VARIABLE);
+            soloConstraintGroup.append(displayIndex - indexOfFirstSlackVariable);
         }
     }
 
@@ -273,8 +286,9 @@ public final class StringUtility {
     private static int[] calcColWidths(LinearProgram program) {
         // Adding 1 to the length for the right-hand side.
         int[] colWidths = new int[program.getVariableCount() + 1];
+        ObjectiveFunction objectiveFunction = program.getObjectiveFunction();
 
-        List<DecisionVariable> decisionVariables = program.getObjectiveFunction().getDecisionVariables();
+        List<DecisionVariable> decisionVariables = objectiveFunction.getDecisionVariables();
 
         // First calculating the width required by header and objective function.
         if (!decisionVariables.isEmpty()) {
@@ -282,7 +296,7 @@ public final class StringUtility {
                 DecisionVariable variable = decisionVariables.get(i);
 
                 // Header line
-                String formattedDecisionVariable = getDecisionVariableAsString(variable, i);
+                String formattedDecisionVariable = getDecisionVariableAsString(variable, i, objectiveFunction);
                 // Objective function line
                 String formattedCoefficient = removeTrailingZeros(variable.getCoefficient(), true);
 
@@ -311,18 +325,27 @@ public final class StringUtility {
      * @param index    The index of the variable.
      * @return The formatted string representation of the decision variable.
      */
-    private static String getDecisionVariableAsString(DecisionVariable variable, int index) {
+    private static String getDecisionVariableAsString(DecisionVariable variable, int index, ObjectiveFunction function) {
         // Should start with x1 instead of x0
         int displayIndex = index + 1;
+        // wont be reached
+        int indexOfFirstSlackVariable = function.getAmountOfStructureVariables();
+        String firstPart;
 
-        // x0
-        String firstPart = DECISION_VARIABLE + displayIndex;
-        if (variable.isNegated()) {
-            return firstPart + NEGATIVE;
+        // if its not a slack variable
+        if (index < indexOfFirstSlackVariable) {
+            firstPart = DECISION_VARIABLE + displayIndex;
+
+            if (variable.isNegated()) {
+                return firstPart + NEGATIVE;
+            } else {
+                // TODO ... bessere Darstellung?
+                // x0 or x0+-
+                return (variable.isSplit()) ? firstPart + POSITIVE + NEGATIVE: firstPart;
+            }
         } else {
-            // TODO x%d+-x%d- oder eine andere, weniger komplizierte, Darstellung?
-            // x0 or x0+-x-
-            return (variable.isSplit()) ? firstPart + POSITIVE + NEGATIVE + firstPart + NEGATIVE : firstPart;
+            // if its a slack variable
+            return SLACK_VARIABLE + (displayIndex - indexOfFirstSlackVariable);
         }
     }
 }

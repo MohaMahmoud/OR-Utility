@@ -13,6 +13,9 @@ import java.util.List;
 public class ObjectiveFunction {
     private OptimizationDirection direction;
     private List<DecisionVariable> decisionVariables;
+    private boolean hasSlackVariables;
+    // structure = original, not slack
+    private int amountOfStructureVariables;
 
     /**
      * Constructs an ObjectiveFunction with the specified optimization direction and variable count.
@@ -23,6 +26,7 @@ public class ObjectiveFunction {
     public ObjectiveFunction(OptimizationDirection direction, int variableCount) {
         this.direction = direction;
         this.decisionVariables = new ArrayList<>(variableCount);
+        hasSlackVariables = false;
 
         // Initialize decision variables with default values.
         for (int i = 0; i < variableCount; i++) {
@@ -41,6 +45,7 @@ public class ObjectiveFunction {
 
     /**
      * Set the optimization direction (MAX or MIN).
+     * Use only before NormalFormOperation.
      *
      * @param direction The new optimization direction.
      */
@@ -59,6 +64,7 @@ public class ObjectiveFunction {
 
     /**
      * Set the decision variables in the objective function.
+     * Use only before NormalFormOperation.
      *
      * @param decisionVariables The new list of decision variables.
      */
@@ -94,6 +100,7 @@ public class ObjectiveFunction {
 
     /**
      * Update the length of decision variables to match the new length.
+     * Use only before NormalFormOperation.
      *
      * @param newLength The new length of decision variables.
      */
@@ -110,6 +117,36 @@ public class ObjectiveFunction {
             decisionVariables = new ArrayList<>(decisionVariables.subList(0, newLength));
         }
         // Do nothing if old length equals new length
+    }
+
+    /**
+     * Adds given amount of zeroes to the decision variables and stores the indices of newly added slack variables.
+     *
+     * @param amount of slack variables.
+     */
+    public void addSlackVariables(int amount) {
+        int originalVariableAmount = decisionVariables.size();
+        hasSlackVariables = true;
+        amountOfStructureVariables = originalVariableAmount;
+        updateLength(originalVariableAmount + amount);
+    }
+
+    /**
+     * Returns true, if function has slack variables.
+     *
+     * @return whether function has slack variables.
+     */
+    public boolean hasSlackVariables() {
+        return hasSlackVariables;
+    }
+
+    /**
+     * Returns the index of the first slack variable or unreachable index, if there are no slack variables.
+     *
+     * @return the index of the first slack variable.
+     */
+    public int getAmountOfStructureVariables() {
+        return amountOfStructureVariables;
     }
 
     /**

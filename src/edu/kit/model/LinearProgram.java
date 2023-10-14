@@ -57,6 +57,23 @@ public class LinearProgram {
     }
 
     /**
+     * Adds given amount of zeros as slack variables in objective function, all constraints, solo constraints.
+     *
+     * @param amount of slack variables.
+     */
+    public void addSlackVariables(int amount) {
+        objectiveFunction.addSlackVariables(amount);
+
+        // Update the constraints.
+        for (Constraint constraint : constraints) {
+            constraint.updateLength(variableCount + amount);
+        }
+
+        // Update the variable count.
+        this.variableCount += amount;
+    }
+
+    /**
      * Get the objective function of the linear program.
      *
      * @return The objective function.
