@@ -13,17 +13,18 @@
 
 ### Medium prio
 - [ ] Add usage info in README.md and command-line for commands
-- [ ] SoloConstraints integration in /show -> x1, x2... xn >= 0
+- [X] SoloConstraints integration in /show -> x1, x2... xn >= 0
 - [ ] Make the AddConstraint command useable with one line: /addconstraint 1 2 3 <= 4 (habe es schon damals so gemacht, man könnte die Lösung aus einer früheren Version nehmen)
 
 ### Low prio
-- [ ] x1, x2, ... xn Spalte bei /show
-- [ ] right align solo constraints (/show)
-- [ ] SoloConstraint in DecisionVariable umbennenen
+- [X] x1, x2, ... xn Zeile bei /show
+- [ ] right align Nichtnegativitätsbedingungen (/show)
+- [X] SoloConstraint in DecisionVariable umbennenen
 
 
 ### Ideen
 - grafische Lösung (Zukunft)
+- SetColumn Befehl?
 
 
 ### Wichtige Begriffe

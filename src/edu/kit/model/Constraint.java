@@ -22,6 +22,21 @@ public class Constraint {
         this.coefficients = coefficients;
     }
 
+    // by index
+    public void setCoefficient(int index, double newCoefficient) {
+        List<Double> updatedCoefficients = new ArrayList<>();
+
+        for (int j = 0; j < coefficients.size(); j++) {
+            if (index == j) {
+                updatedCoefficients.add(newCoefficient);
+            } else {
+                updatedCoefficients.add(coefficients.get(j));
+            }
+        }
+
+        coefficients = updatedCoefficients;
+    }
+
     public double getRightHandSide() {
         return rightHandSide;
     }

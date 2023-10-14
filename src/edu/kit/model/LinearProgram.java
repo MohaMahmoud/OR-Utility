@@ -17,7 +17,7 @@ public class LinearProgram {
     }
 
     public int getVariableCount() {
-        return variableCount;
+        return objectiveFunction.getDecisionVariables().size();
     }
 
     public void setVariableCount(int variableCount) {

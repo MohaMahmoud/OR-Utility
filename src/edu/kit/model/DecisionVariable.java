@@ -2,6 +2,7 @@ package edu.kit.model;
 
 public class DecisionVariable {
     private final int index;
+    // coefficient in objective function
     private Double coefficient;
     private ComparisonOperator operator;
     private boolean negated;

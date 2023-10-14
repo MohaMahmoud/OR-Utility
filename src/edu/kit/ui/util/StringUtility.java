@@ -1,191 +1,199 @@
 package edu.kit.ui.util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.kit.model.*;
 
+import static java.lang.Math.max;
+
+/**
+ * A utility class for formatting linear programming models.
+ *
+ * @author Mohammad Mahmoud
+ * @author Oleksandr Shchetsura
+ */
 public final class StringUtility {
-    /**
-     * Error message in case a utility class is instantiated. 
-     */
     public static final String UTILITY_CLASS_INSTANTIATION = "Utility class cannot be instantiated.";
-
-    /**
-     * // TODO Javadoc
-     */
     public static final String BR = System.lineSeparator();
-
-    /**
-     * // TODO Javadoc
-     */
     public static final String SPACE = " ";
-
     private static final String OBJECTIVE_FUNCTION_PREFIX = "OF: ";
     private static final String CONSTRAINT_PREFIX = "C%d: ";
 
     private static final String SEPARATOR = " | ";
+    private static final String DECISION_VARIABLE = "x";
+    private static final String NEGATIVE = "-";
+    private static final String POSITIVE = "+";
+    private static final String DECISION_VARIABLE_SEPARATOR = ", ";
 
-
+    /**
+     * Private constructor to prevent instantiation of the utility class.
+     *
+     * @throws IllegalAccessException If the class is instantiated.
+     */
     private StringUtility() throws IllegalAccessException {
         throw new IllegalAccessException(UTILITY_CLASS_INSTANTIATION);
     }
 
+    /**
+     * Format a linear program.
+     *
+     * @param program The linear program.
+     * @return The formatted linear program as a string.
+     */
     public static String format(LinearProgram program) {
-        // Get the objective functions and contrains (if applicable).
+        StringBuilder builder = new StringBuilder();
+
+        // Get the objective functions and constraints (if applicable).
         ObjectiveFunction function = program.getObjectiveFunction();
         List<Constraint> constraints = program.getConstraints();
 
-        // Calculate max width of the program.
+        // Calculate the maximum width of matrix columns..
         final int[] colWidths = calcColWidths(program);
 
-        StringBuilder builder = new StringBuilder();
-
-        // Extra step to format the program with more than 9 constrains.
         int label = OBJECTIVE_FUNCTION_PREFIX.length();
+        // An extra step to format the program with more than 9 constraints.
         if (constraints.size() > 10) {
             label = String.format(CONSTRAINT_PREFIX, constraints.size() - 1).length();
         }
 
-        // Format the objective function.
+        //     x1  x2 ... xn
+        formatHeaderLine(builder, colWidths, label, function);
+        // OF:  1   2 ... n (MAX)
         formatObjectiveFunction(builder, colWidths, label, function);
-
-        // Format the constrains.
+        // C0:  1 | 2 ... n >= 5
         if (!constraints.isEmpty()) {
-            formatContraints(builder, colWidths, label, constraints);
+            formatConstraints(builder, colWidths, label, constraints);
         }
+        // x1, x2, ... x3 >= 0
+        formatSoloConstraints(builder, function.getDecisionVariables());
 
-        // Format solo constraints.
-        formatDecisionVariables(builder, function.getDecisionVariables());
-
-        return builder.toString().trim();
+        return builder.toString();
     }
 
-    private static void formatObjectiveFunction(StringBuilder builder, int[] colWidths, int label, ObjectiveFunction function) {
-        builder.append(OBJECTIVE_FUNCTION_PREFIX);
-        builder.append(SPACE.repeat(label - OBJECTIVE_FUNCTION_PREFIX.length()));
+    /**
+     * Format the header line for decision variables.
+     *    x1  x2 ... xn
+     *
+     * @param builder           The StringBuilder to which the formatted string is appended.
+     * @param colWidths          An array of column widths.
+     * @param label              The label for formatting.
+     * @param function           The objective function.
+     */
+    private static void formatHeaderLine(StringBuilder builder, int[] colWidths, int label, ObjectiveFunction function) {
+        builder.append(SPACE.repeat(label));
 
         // Format the cells of all the coefficients.
-        List<Double> coefficients = function.getCoefficients();
-        formatCoefficients(builder, coefficients, colWidths);
+        List<DecisionVariable> decisionVariables = function.getDecisionVariables();
+        for (int i = 0; i < decisionVariables.size(); i++) {
+            builder.append(String.format("%" + colWidths[i] + "s", getDecisionVariableAsString(decisionVariables.get(i), i)));
+            builder.append(SPACE.repeat(SEPARATOR.length()));
+        }
+    }
+
+    /**
+     * Format the objective function.
+     * OF:  1   2 ... n (MAX)
+     *
+     * @param builder           The StringBuilder to which the formatted string is appended.
+     * @param colWidths          An array of column widths.
+     * @param label              The label for formatting.
+     * @param function           The objective function.
+     */
+    private static void formatObjectiveFunction(StringBuilder builder, int[] colWidths, int label, ObjectiveFunction function) {
+        builder.append(BR);
+        builder.append(OBJECTIVE_FUNCTION_PREFIX).append(SPACE.repeat(label - OBJECTIVE_FUNCTION_PREFIX.length()));
+
+        // Format the cells of all the coefficients.
+        formatCoefficientLine(builder, function.getCoefficients(), colWidths);
         builder.append(function.getDirection().toString());
     }
 
-    private static void formatContraints(StringBuilder builder, int[] colWidths, int label, List<Constraint> constraints) {
-        // Add space after the objective function.
+    /**
+     * Format the constraints.
+     * C0:  1 | 2 ... n >= 5
+     *
+     * @param builder           The StringBuilder to which the formatted string is appended.
+     * @param colWidths          An array of column widths.
+     * @param label              The label for formatting.
+     * @param constraints        The list of constraints to be formatted.
+     */
+    private static void formatConstraints(StringBuilder builder, int[] colWidths, int label, List<Constraint> constraints) {
+        // Add empty line after the objective function.
         builder.append(BR).append(BR);
 
-        // Go through all contrains and format them.
+        // Go through all constraints and format them.
         for (int i = 0; i < constraints.size(); i++) {
             Constraint constraint = constraints.get(i);
-            List<Double> coefficients = constraint.getCoefficients();
 
             // Shifting the prefix if needed.
             final String prefix = String.format(CONSTRAINT_PREFIX, i);
             builder.append(prefix).append(SPACE.repeat(label - prefix.length()));
 
-            // Format all coefficients of the left hand side.
-            formatCoefficients(builder, coefficients, colWidths);
+            // Format all coefficients of the left-hand side.
+            formatCoefficientLine(builder, constraint.getCoefficients(), colWidths);
 
-            // Append the operator and right hand side of the contraint.
-            ComparisonOperator operator = constraint.getOperator();
-            builder.append(operator.toString()).append(SPACE);
+            // Append the operator and right-hand side of the constraint.
+            String operator = constraint.getOperator().toString();
+            // 3-length -> only one space after <= and >=, but two after =
+            builder.append(operator).append(SPACE.repeat(3 - operator.length()));
 
-            if (operator.equals(ComparisonOperator.EQ)) {
-                builder.append(SPACE);
-            }
-
-            // Format the right hand side.
+            // Format the right-hand side.
             formatCell(builder, constraint.getRightHandSide(), colWidths[colWidths.length - 1], true);
             builder.append(BR);
         }
     }
 
-    private static final String SOLOCONSTRAINTSEPARATOR = ", ";
-    private static final String COEFFICIENT = "x";
-    private static final String NEGATIVE_MARKED = "-";
-    private static final String POSITIVE_MARKED = "+";
-    private static void formatDecisionVariables(StringBuilder builder, List<DecisionVariable> decisionVariables) {
-        // Split constraints up in <=, >= and =
+    /**
+     * Format the solo constraints.
+     * x1, x2, ... x3 >= 0
+     *
+     * @param builder            The StringBuilder to which the formatted string is appended.
+     * @param decisionVariables  The list of decision variables.
+     */
+    private static void formatSoloConstraints(StringBuilder builder, List<DecisionVariable> decisionVariables) {
+        // Split constraints up into <=, >=, and = constraints and create a separat line for each of them.
         StringBuilder leqSoloConstraints = new StringBuilder();
         StringBuilder geqSoloConstraints = new StringBuilder();
         StringBuilder eqSoloConstraints = new StringBuilder();
+
         for (DecisionVariable decisionVariable : decisionVariables) {
             switch (decisionVariable.getOperator()) {
                 case GEQ:
-                    formatCoefficient(geqSoloConstraints, decisionVariable);
+                    formatSoloCoefficient(geqSoloConstraints, decisionVariable);
                     break;
                 case LEQ:
-                    formatCoefficient(leqSoloConstraints, decisionVariable);
+                    formatSoloCoefficient(leqSoloConstraints, decisionVariable);
                     break;
                 case EQ:
                     if (!decisionVariable.isSplit()) {
-                        formatCoefficient(eqSoloConstraints, decisionVariable);
+                        formatSoloCoefficient(eqSoloConstraints, decisionVariable);
                     } else {
-                        // x = x+ - x- (both positive)
-                        formatCoefficient(geqSoloConstraints, decisionVariable);
-                        builder.append(POSITIVE_MARKED);
-                        formatCoefficient(geqSoloConstraints, decisionVariable);
-                        builder.append(NEGATIVE_MARKED);
+                        // x = 0 -> = x+ - x- -> x+, x- >= 0
+                        formatSoloCoefficient(geqSoloConstraints, decisionVariable);
+                        geqSoloConstraints.append(POSITIVE);
+                        formatSoloCoefficient(geqSoloConstraints, decisionVariable);
+                        geqSoloConstraints.append(NEGATIVE);
                     }
                     break;
             }
         }
 
-        // Append SoloConstraints grouped by operator.
+        // Append Solo Constraints grouped by operator.
         formatSoloConstraintLine(builder, geqSoloConstraints, ComparisonOperator.GEQ);
         formatSoloConstraintLine(builder, leqSoloConstraints, ComparisonOperator.LEQ);
         formatSoloConstraintLine(builder, eqSoloConstraints, ComparisonOperator.EQ);
     }
 
-    private static void formatCoefficient(StringBuilder soloConstraintGroup, DecisionVariable decisionVariable) {
-        if (!soloConstraintGroup.isEmpty()) {
-            soloConstraintGroup.append(SOLOCONSTRAINTSEPARATOR);
-        }
-        soloConstraintGroup.append(COEFFICIENT);
-        soloConstraintGroup.append(decisionVariable.getIndex());
-        if (decisionVariable.isNegated()) {
-            soloConstraintGroup.append(NEGATIVE_MARKED);
-        }
-    }
-    private static void formatSoloConstraintLine(StringBuilder builder, StringBuilder groupedConstraints, ComparisonOperator operator) {
-        if (!groupedConstraints.isEmpty()) {
-            builder.append(BR).append(groupedConstraints).append(SPACE).append(operator).append(SPACE).append(0);
-        }
-    }
-
-    private static int[] calcColWidths(LinearProgram program) {
-        // Adding 1 to length for the right hand side.
-        int[] colWidths = new int[program.getVariableCount() + 1];
-
-        // Filling column widths widths of the objective function.
-        List<DecisionVariable> coefficients = program.getObjectiveFunction().getDecisionVariables();
-        // TODO decision variable split?
-        if (!coefficients.isEmpty()) {
-            for (int i = 0; i < program.getVariableCount(); i++) {
-                String formattedCoefficient = removeTailingZeros(coefficients.get(i).getCoefficient(), true);
-                colWidths[i] = formattedCoefficient.length();
-            }
-        }
-
-        // Updating the widths of the columns with the contrains.
-        for (Constraint constraint : program.getConstraints()) {
-            List<Double> contraintCoefficients = constraint.getCoefficients();
-            for (int i = 0; i < colWidths.length; i++) {
-                final double value = (i < program.getVariableCount()) ? contraintCoefficients.get(i)
-                        : constraint.getRightHandSide();
-                final int width = String.valueOf(value).length();
-                colWidths[i] = Math.max(colWidths[i], width);
-            }
-        }
-
-        // Return the maximum width for each column.
-        return colWidths;
-    }
-
-    private static void formatCoefficients(StringBuilder builder, List<Double> decisionVariables, int[] colWidths) {
+    /**
+     * Format the coefficients of decision variables in the left-hand side of a constraint.
+     *
+     * @param builder           The StringBuilder to which the formatted string is appended.
+     * @param decisionVariables The list of coefficients of decision variables.
+     * @param colWidths          An array of column widths.
+     */
+    private static void formatCoefficientLine(StringBuilder builder, List<Double> decisionVariables, int[] colWidths) {
+        // Left hand side of constraints or objective function
         for (int j = 0; j < decisionVariables.size(); j++) {
-            // Format each cell of the left hand side.
             formatCell(builder, decisionVariables.get(j), colWidths[j], false);
             if (j < decisionVariables.size() - 1) {
                 builder.append(SEPARATOR);
@@ -195,16 +203,127 @@ public final class StringUtility {
         }
     }
 
+    /**
+     * Format a cell in the output string.
+     *
+     * @param builder     The StringBuilder to which the formatted string is appended.
+     * @param coefficient The coefficient value to be formatted.
+     * @param colWidth    The width of the column.
+     * @param showZeros   Whether to show zero coefficients.
+     */
     private static void formatCell(StringBuilder builder, Double coefficient, int colWidth, boolean showZeros) {
-
-        // Formats the cell to the corrent width and align the value to the right.
-        builder.append(String.format("%" + colWidth + "s", removeTailingZeros(coefficient, showZeros)));
+        // Formats the cell to the correct width and aligns the value to the right.
+        builder.append(String.format("%" + colWidth + "s", removeTrailingZeros(coefficient, showZeros)));
     }
 
-    private static String removeTailingZeros(Double coefficient, boolean showZeros) {
+    /**
+     * Remove trailing zeros from a coefficient while formatting.
+     *
+     * @param coefficient The coefficient value to be formatted.
+     * @param showZeros   Whether to show zero coefficients.
+     * @return The formatted coefficient value as a string.
+     */
+    private static String removeTrailingZeros(Double coefficient, boolean showZeros) {
         if (coefficient != 0.0 || showZeros) {
             return (coefficient % 1 == 0) ? String.format("%.0f", coefficient) : String.valueOf(coefficient);
         }
         return "";
-    } // TODO Check why the formatting is still with too many white spaces
+    }
+
+    /**
+     * Format a coefficient of the decision variable in a solo constraint and append it to the builder.
+     *
+     * @param soloConstraintGroup The StringBuilder to which the formatted string is appended.
+     * @param decisionVariable    The decision variable.
+     */
+    private static void formatSoloCoefficient(StringBuilder soloConstraintGroup, DecisionVariable decisionVariable) {
+        // If its not the first coefficient in the list, add separator.
+        if (!soloConstraintGroup.isEmpty()) {
+            soloConstraintGroup.append(DECISION_VARIABLE_SEPARATOR);
+        }
+
+        soloConstraintGroup.append(DECISION_VARIABLE);
+        // +1 so it starts with x1 instead of x0
+        soloConstraintGroup.append(decisionVariable.getIndex() + 1);
+        // x1-
+        if (decisionVariable.isNegated()) {
+            soloConstraintGroup.append(NEGATIVE);
+        }
+    }
+
+    /**
+     * Format and append a line of solo constraints for a specific operator.
+     *
+     * @param builder             The StringBuilder to which the formatted string is appended.
+     * @param groupedConstraints   The grouped solo constraints as a StringBuilder.
+     * @param operator            The comparison operator.
+     */
+    private static void formatSoloConstraintLine(StringBuilder builder, StringBuilder groupedConstraints, ComparisonOperator operator) {
+        if (!groupedConstraints.isEmpty()) {
+            builder.append(BR).append(groupedConstraints).append(SPACE).append(operator).append(SPACE).append(0);
+        }
+    }
+
+    /**
+     * Calculate the column widths for formatting.
+     *
+     * @param program The linear program.
+     * @return An array of maximum column widths.
+     */
+    private static int[] calcColWidths(LinearProgram program) {
+        // Adding 1 to the length for the right-hand side.
+        int[] colWidths = new int[program.getVariableCount() + 1];
+
+        List<DecisionVariable> decisionVariables = program.getObjectiveFunction().getDecisionVariables();
+
+        // First calculating the width required by header and objective function.
+        if (!decisionVariables.isEmpty()) {
+            for (int i = 0; i < decisionVariables.size(); i++) {
+                DecisionVariable variable = decisionVariables.get(i);
+
+                // Header line
+                String formattedDecisionVariable = getDecisionVariableAsString(variable, i);
+                // Objective function line
+                String formattedCoefficient = removeTrailingZeros(variable.getCoefficient(), true);
+
+                colWidths[i] = max(formattedDecisionVariable.length(), formattedCoefficient.length());
+            }
+        }
+
+        // Updating the widths of the columns with the constraints.
+        for (Constraint constraint : program.getConstraints()) {
+            for (int i = 0; i < colWidths.length; i++) {
+                final double value = (i < program.getVariableCount()) ? constraint.getCoefficients().get(i)
+                    : constraint.getRightHandSide();
+                final int width = String.valueOf(value).length();
+                colWidths[i] = max(colWidths[i], width);
+            }
+        }
+
+        // Return the maximum width for each column.
+        return colWidths;
+    }
+
+    /**
+     * Get the string representation of a decision variable.
+     *
+     * @param variable The decision variable.
+     * @param index    The index of the variable.
+     * @return The formatted string representation of the decision variable.
+     */
+    private static String getDecisionVariableAsString(DecisionVariable variable, int index) {
+        // Should start with x1 instead of x0
+        int displayIndex = index + 1;
+
+        // x0
+        String firstPart = DECISION_VARIABLE + displayIndex;
+        if (variable.isNegated()) {
+            return firstPart + NEGATIVE;
+        } else {
+            // TODO x%d+-x%d- oder eine andere, weniger komplizierte, Darstellung?
+            // x0 or x0+-x-
+            return (variable.isSplit()) ? firstPart + POSITIVE + NEGATIVE + firstPart + NEGATIVE : firstPart;
+        }
+    }
 }
+

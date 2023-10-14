@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.kit.model.ComparisonOperator;
-import edu.kit.model.Constraint;
-import edu.kit.model.DecisionVariable;
-import edu.kit.model.LinearProgram;
+import edu.kit.model.*;
 import edu.kit.ui.exceptions.OperationException;
 import edu.kit.ui.logic.Operation;
 
@@ -47,7 +44,25 @@ public class DummyDataOperation extends Operation {
         addConstraintDirectly("1.8 0.0 0.0 0.0 0.0 0.0 <= -2.1"); // Right-hand side negative, one variable non-zero
         addConstraintDirectly("0.0 0.0 0.0 0.0 0.0 0.0 <= -5.9"); // Right-hand side negative, all variables zero
         addConstraintDirectly("-1.2 0.0 0.0 0.0 0.0 0.0 = 3.8"); // Right-hand side positive, one variable non-zero
-                                                                 // (negative coefficient)
+
+        List<DecisionVariable> decisionVariables = program.getObjectiveFunction().getDecisionVariables();
+        decisionVariables.get(2).setOperator(ComparisonOperator.EQ);
+        decisionVariables.get(4).setOperator(ComparisonOperator.LEQ);
+        /*program.setVariableCount(3);
+        program.getObjectiveFunction().setDirection(OptimizationDirection.MIN);
+        ComparisonOperator defaultOperator = ComparisonOperator.GEQ;
+        program.getObjectiveFunction().setDecisionVariables(Arrays.asList(
+                new DecisionVariable(0, -1, defaultOperator),
+                new DecisionVariable(1, 3, defaultOperator),
+                new DecisionVariable(2, 0, ComparisonOperator.LEQ)
+            )
+        );
+
+        // Constraints
+        addConstraintDirectly("3 4 -3 >= 5");
+        addConstraintDirectly("2 1 4 <= 4");
+        addConstraintDirectly("1 3 -1 = 7");
+        */
         return SUCCESS;
     }
 

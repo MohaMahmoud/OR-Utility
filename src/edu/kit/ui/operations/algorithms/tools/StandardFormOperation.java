@@ -22,72 +22,74 @@ public class StandardFormOperation extends Operation {
     public String execute() throws OperationException {
         ObjectiveFunction function = program.getObjectiveFunction();
 
-        // If the objective function is a MIN function then change it to MAX.
-        if (function.getDirection().equals(OptimizationDirection.MIN))
-            function.negate();
-
+        modifyObjectiveFunction(function);
         modifyConstraints();
-
-        modifyDecisionVariables();
+        modifyDecisionVariables(function);
 
         return SUCCESS;
     }
 
+    private void modifyObjectiveFunction(ObjectiveFunction function) {
+        // If the objective function is a MIN function then change it to MAX.
+        if (function.getDirection().equals(OptimizationDirection.MIN)) {
+            function.negate();
+        }
+    }
+
     private void modifyConstraints() {
         // Change all constrains to <=.
-        List<Constraint> constraints = new ArrayList<>();
+        List<Constraint> modifiedConstraints = new ArrayList<>();
+
+        // modifiedConstraints.add(constraint); bei jedem angegeben, für die Reihenfolge bei (=)
         for (Constraint constraint : program.getConstraints()) {
             switch (constraint.getOperator()) {
                 case GEQ:
                     constraint.negate();
+                    modifiedConstraints.add(constraint);
                     break;
                 case EQ:
                     // split constraint in <= and >=.
-                    constraint.setOperator(ComparisonOperator.LEQ);
                     Constraint geqConstraint = constraint.copy();
+
+                    constraint.setOperator(ComparisonOperator.LEQ);
+                    modifiedConstraints.add(constraint);
+
                     geqConstraint.setOperator(ComparisonOperator.GEQ);
                     geqConstraint.negate();
-                    constraints.add(geqConstraint);
+                    modifiedConstraints.add(geqConstraint);
                     break;
                 default:
+                    modifiedConstraints.add(constraint);
                     break;
             }
-            constraints.add(constraint);
         }
 
         // Update the new constraints in the linear program.
-        program.setConstraints(constraints);
+        program.setConstraints(modifiedConstraints);
     }
 
-    private void modifyDecisionVariables() {
-        ObjectiveFunction objectiveFunction = program.getObjectiveFunction();
-        if (!objectiveFunction.areThereOnlyGeqSoloConstraints()) {
-            List<DecisionVariable> decisionVariables = objectiveFunction.getDecisionVariables();
+    private void modifyDecisionVariables(ObjectiveFunction function) {
+        if (!function.areThereOnlyGeqSoloConstraints()) {
+            List<DecisionVariable> decisionVariables = function.getDecisionVariables();
 
             for (int i = 0; i < decisionVariables.size(); i++) {
                 DecisionVariable decisionVariable = decisionVariables.get(i);
                 switch (decisionVariable.getOperator()) {
                     case LEQ:
                         decisionVariable.negateLeq();
+
+                        // Change the coefficient in every constraint
                         for (Constraint constraint : program.getConstraints()) {
-                            double oldCoefficient = constraint.getCoefficients().get(i);
-                            decisionVariables.set(i, -oldCoefficient);
+                            constraint.setCoefficient(i, -constraint.getCoefficients().get(i));
                         }
                         break;
                     case EQ:
-                        // split constraint in <= and >=. x = x+ - x-
-                        // TODO dadurch gibt es eine Variable mehr, überlegen wie wir damit umgehen (kennzeichnen bei der Objective Function und den Constraints?)
-                        /*soloConstraint.setOperator(ComparisonOperator.LEQ);
-                        SoloConstraint geqSoloConstraint = soloConstraint.copy();
-                        geqSoloConstraint.setOperator(ComparisonOperator.GEQ);
-                        soloConstraints.add(geqSoloConstraint);
-                        soloConstraint.negateLeq();*/
-                        // TODO in allen constraints und in der Objective Function ändern
+                        // x = x+ - x-
+                        decisionVariable.split();
                         break;
                     default:
                         break;
                 }
-                decisionVariables.add(decisionVariable);
             }
         }
     }
