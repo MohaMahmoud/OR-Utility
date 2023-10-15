@@ -6,11 +6,13 @@ package edu.kit.model;
  * @author Oleksandr Shchetsura
  */
 public class DecisionVariable {
-    private final int index;
+    private int displayIndex;
     // Coefficient in the objective function.
     private Double coefficient;
     // Operator for the Solo Constraint
     private ComparisonOperator operator;
+    // true, if its a slack variable
+    private boolean slack;
     // x <= 0 -> x- >= 0
     private boolean negated;
     // x = 0 -> x+, x- >= 0
@@ -24,20 +26,21 @@ public class DecisionVariable {
      * @param operator         The comparison operator associated with the variable.
      */
     public DecisionVariable(int coefficientIndex, double coefficient, ComparisonOperator operator) {
-        this.index = coefficientIndex;
+        this.displayIndex = coefficientIndex + 1;
         this.coefficient = coefficient;
         this.operator = operator;
+        slack = false;
         negated = false;
         split = false;
     }
 
     /**
-     * Get the index of the decision variable.
+     * Get the index to display with the decision variable. (x1...)
      *
-     * @return The index of the variable.
+     * @return The display index of the variable.
      */
-    public int getIndex() {
-        return index;
+    public int getDisplayIndex() {
+        return displayIndex;
     }
 
     /**
@@ -74,6 +77,25 @@ public class DecisionVariable {
      */
     public void setOperator(ComparisonOperator operator) {
         this.operator = operator;
+    }
+
+    /**
+     * Change variable type to slack and change display index.
+     *
+     * @index of the slack variable
+     */
+    public void turnSlack(int index) {
+        slack = true;
+        displayIndex = index + 1;
+    }
+
+    /**
+     * Returns true, if variable is a slack variable.
+     *
+     * @return whether variable is a slack variable.
+     */
+    public boolean isSlack() {
+        return slack;
     }
 
     /**

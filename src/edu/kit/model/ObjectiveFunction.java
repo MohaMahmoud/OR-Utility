@@ -125,10 +125,12 @@ public class ObjectiveFunction {
      * @param amount of slack variables.
      */
     public void addSlackVariables(int amount) {
-        int originalVariableAmount = decisionVariables.size();
+        amountOfStructureVariables = decisionVariables.size();
+        updateLength(amountOfStructureVariables + amount);
         hasSlackVariables = true;
-        amountOfStructureVariables = originalVariableAmount;
-        updateLength(originalVariableAmount + amount);
+        for (int i = amountOfStructureVariables; i < decisionVariables.size(); i++) {
+            decisionVariables.get(i).turnSlack(i - amountOfStructureVariables);
+        }
     }
 
     /**

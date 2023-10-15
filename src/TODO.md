@@ -3,17 +3,11 @@
 - [ ] Add und remove coefficient methode.
 
 ### High prio
-- [X] Constraints to = function (mit Schlupfvariablen. Zur Abgrenzung die anderen Strukturvariablen nennen)
-- [X] ChangeObjectiveFunctionOperation
-- [X] split method of = constraints
-- [X] Finish standard from command
-- [X] Constraint negation
-- [X] getForm()
 - [X] SoloConstraints doch einbauen (bei <= 0 -> Substituieren mit -SoloConstraint (ÜB 2))
-- [ ] keine modification operations nach NormalFormOperation (Simplex etc. erst mit NormalForm möglich!
 - [ ] Befehl um das lineare Program final zu bestätigen, um NormalFormOperation, Simplex etc freizuschalten...
 
 ### Medium prio
+- [ ] keine modification operations nach NormalFormOperation (Simplex etc. erst mit NormalForm möglich!
 - [X] SoloConstraints integration in /show -> x1, x2... xn >= 0
 - [X] Unterscheidung zwischen Slack und Normalen Variablen (auch bei show)
 
