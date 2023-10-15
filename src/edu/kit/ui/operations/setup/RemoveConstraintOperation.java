@@ -1,4 +1,4 @@
-package edu.kit.ui.operations.modification;
+package edu.kit.ui.operations.setup;
 
 import java.util.Scanner;
 

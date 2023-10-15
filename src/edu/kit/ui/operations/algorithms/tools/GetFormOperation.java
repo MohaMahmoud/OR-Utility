@@ -33,12 +33,15 @@ public class GetFormOperation extends Operation {
     public String execute() throws OperationException {
         ObjectiveFunction objectiveFunction = program.getObjectiveFunction();
 
-        // Check if it's a minimization objective function or solo constraints are not all >= or =.
-        if (objectiveFunction.getDirection().equals(OptimizationDirection.MIN) || objectiveFunction.areThereLeqSoloConstraints()) {
+        // Check if it's a minimization objective function or solo constraints are not
+        // all >= or =.
+        if (objectiveFunction.getDirection().equals(OptimizationDirection.MIN)
+                || objectiveFunction.areThereLeqSoloConstraints()) {
             return ProgramForm.DEFAULT.toString();
         }
 
-        // Check if there are only <= or = as operators and whether the right-hand side only contains positive values.
+        // Check if there are only <= or = as operators and whether the right-hand side
+        // only contains positive values.
         boolean onlyLeq = true;
         boolean onlyEq = true;
         boolean rightSidePositive = true;
@@ -70,4 +73,3 @@ public class GetFormOperation extends Operation {
         }
     }
 }
-

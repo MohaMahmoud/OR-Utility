@@ -24,14 +24,12 @@ public class DummyDataOperation extends Operation {
         program.setVariableCount(6);
         ComparisonOperator defaultOperator = ComparisonOperator.GEQ;
         program.getObjectiveFunction().setDecisionVariables(Arrays.asList(
-            new DecisionVariable(0, 1.2, defaultOperator),
-            new DecisionVariable(1, -2, defaultOperator),
-            new DecisionVariable(2, 0, ComparisonOperator.LEQ),
-            new DecisionVariable(3, 3, defaultOperator),
-            new DecisionVariable(4, -1, ComparisonOperator.EQ),
-            new DecisionVariable(5, 1.5, defaultOperator)
-            )
-        );
+                new DecisionVariable(0, 1.2, defaultOperator),
+                new DecisionVariable(1, -2, defaultOperator),
+                new DecisionVariable(2, 0, ComparisonOperator.LEQ),
+                new DecisionVariable(3, 3, defaultOperator),
+                new DecisionVariable(4, -1, ComparisonOperator.EQ),
+                new DecisionVariable(5, 1.5, defaultOperator)));
 
         // Constraints
         addConstraintDirectly("-2.2 0.0 0.0 1.9 -2.1 0.0 >= 7.4");
@@ -48,21 +46,22 @@ public class DummyDataOperation extends Operation {
         List<DecisionVariable> decisionVariables = program.getObjectiveFunction().getDecisionVariables();
         decisionVariables.get(2).setOperator(ComparisonOperator.EQ);
         decisionVariables.get(4).setOperator(ComparisonOperator.LEQ);
-        /*program.setVariableCount(3);
-        program.getObjectiveFunction().setDirection(OptimizationDirection.MIN);
-        ComparisonOperator defaultOperator = ComparisonOperator.GEQ;
-        program.getObjectiveFunction().setDecisionVariables(Arrays.asList(
-                new DecisionVariable(0, -1, defaultOperator),
-                new DecisionVariable(1, 3, defaultOperator),
-                new DecisionVariable(2, 0, ComparisonOperator.LEQ)
-            )
-        );
-
-        // Constraints
-        addConstraintDirectly("3 4 -3 >= 5");
-        addConstraintDirectly("2 1 4 <= 4");
-        addConstraintDirectly("1 3 -1 = 7");
-        */
+        /*
+         * program.setVariableCount(3);
+         * program.getObjectiveFunction().setDirection(OptimizationDirection.MIN);
+         * ComparisonOperator defaultOperator = ComparisonOperator.GEQ;
+         * program.getObjectiveFunction().setDecisionVariables(Arrays.asList(
+         * new DecisionVariable(0, -1, defaultOperator),
+         * new DecisionVariable(1, 3, defaultOperator),
+         * new DecisionVariable(2, 0, ComparisonOperator.LEQ)
+         * )
+         * );
+         * 
+         * // Constraints
+         * addConstraintDirectly("3 4 -3 >= 5");
+         * addConstraintDirectly("2 1 4 <= 4");
+         * addConstraintDirectly("1 3 -1 = 7");
+         */
         return SUCCESS;
     }
 

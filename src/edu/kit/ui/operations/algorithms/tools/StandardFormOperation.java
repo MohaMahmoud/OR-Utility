@@ -40,7 +40,8 @@ public class StandardFormOperation extends Operation {
         // Change all constrains to <=.
         List<Constraint> modifiedConstraints = new ArrayList<>();
 
-        // modifiedConstraints.add(constraint); bei jedem angegeben, für die Reihenfolge bei (=)
+        // modifiedConstraints.add(constraint); bei jedem angegeben, für die Reihenfolge
+        // bei (=)
         for (Constraint constraint : program.getConstraints()) {
             switch (constraint.getOperator()) {
                 case GEQ:

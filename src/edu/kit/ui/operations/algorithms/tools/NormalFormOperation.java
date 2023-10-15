@@ -22,11 +22,14 @@ public class NormalFormOperation extends Operation {
     private final Operation getForm;
 
     /**
-     * Constructs a NormalFormOperation with the specified linear program, standard form operation, and get form operation.
+     * Constructs a NormalFormOperation with the specified linear program, standard
+     * form operation, and get form operation.
      *
      * @param program      The linear program to convert to normal form.
-     * @param standardForm The operation to put the program in standard form if needed.
-     * @param getForm      The operation to determine the current form of the program.
+     * @param standardForm The operation to put the program in standard form if
+     *                     needed.
+     * @param getForm      The operation to determine the current form of the
+     *                     program.
      */
     public NormalFormOperation(LinearProgram program, Operation standardForm, Operation getForm) {
         super(NAME, DESCRIPTION);
@@ -59,7 +62,8 @@ public class NormalFormOperation extends Operation {
         final int oldVariableCount = program.getVariableCount();
         program.addSlackVariables(slackVariableCount);
 
-        // Put ones on the diagonal of the appended zeros matrix to turn it into a identity matrix.
+        // Put ones on the diagonal of the appended zeros matrix to turn it into a
+        // identity matrix.
         for (int i = 0; i < slackVariableCount; i++) {
             Constraint constraint = constraints.get(i);
 

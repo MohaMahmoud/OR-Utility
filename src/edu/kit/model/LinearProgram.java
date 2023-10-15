@@ -7,7 +7,8 @@ import java.util.List;
 import edu.kit.ui.util.StringUtility;
 
 /**
- * Represents a linear program consisting of an objective function and a list of constraints.
+ * Represents a linear program consisting of an objective function and a list of
+ * constraints.
  *
  * @author Mohammad Mahmoud
  * @author Oleksandr Shchetsura
@@ -35,8 +36,10 @@ public class LinearProgram {
     }
 
     /**
-     * Set the number of variables in the linear program. And update the objective function & all constraints.
-     * Add zeros if the count got bigger or remove last variables, if it got smaller.
+     * Set the number of variables in the linear program. And update the objective
+     * function & all constraints.
+     * Add zeros if the count got bigger or remove last variables, if it got
+     * smaller.
      *
      * @param variableCount The new number of decision variables.
      */
@@ -57,7 +60,8 @@ public class LinearProgram {
     }
 
     /**
-     * Adds given amount of zeros as slack variables in objective function, all constraints, solo constraints.
+     * Adds given amount of zeros as slack variables in objective function, all
+     * constraints, solo constraints.
      *
      * @param amount of slack variables.
      */
@@ -119,7 +123,8 @@ public class LinearProgram {
     }
 
     /**
-     * Get a string representation of the linear program using the StringUtility class.
+     * Get a string representation of the linear program using the StringUtility
+     * class.
      *
      * @return A formatted string representation of the linear program.
      */
@@ -128,4 +133,3 @@ public class LinearProgram {
         return StringUtility.format(this);
     }
 }
-

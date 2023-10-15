@@ -1,4 +1,4 @@
-package edu.kit.ui.operations.modification;
+package edu.kit.ui.operations.setup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,8 @@ public class AddConstraintOperation extends Operation {
 
         final int variableCount = program.getVariableCount();
         if (input.length != variableCount) {
-            throw new OperationException("Invalid amount of coefficients. The linear program has " + variableCount + "variables.");
+            throw new OperationException(
+                    "Invalid amount of coefficients. The linear program has " + variableCount + "variables.");
         } // TODO Maybe loop on wrong input instead of throwing and starting over?
 
         // Parse user input.
@@ -50,7 +51,8 @@ public class AddConstraintOperation extends Operation {
         System.out.print("Enter the comparison operator: ");
         ComparisonOperator operator = ComparisonOperator.parse(scanner.nextLine());
 
-        if (operator == null) throw new OperationException("Invalid operator. Valid operators are: <=, = and >=.");
+        if (operator == null)
+            throw new OperationException("Invalid operator. Valid operators are: <=, = and >=.");
 
         // Right hand side input.
         System.out.print("Enter the right hand side of the constraint: ");

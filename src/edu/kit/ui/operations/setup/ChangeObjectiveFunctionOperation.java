@@ -1,4 +1,4 @@
-package edu.kit.ui.operations.modification;
+package edu.kit.ui.operations.setup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +36,21 @@ public class ChangeObjectiveFunctionOperation extends Operation {
         for (String decisionVariable : input) {
             int c = 0;
             try {
-                decisionVariables.add(new DecisionVariable(c, Double.parseDouble(decisionVariable), ComparisonOperator.GEQ));
+                decisionVariables
+                        .add(new DecisionVariable(c, Double.parseDouble(decisionVariable), ComparisonOperator.GEQ));
                 c++;
             } catch (NumberFormatException exception) {
                 throw new OperationException("Invalid input. Use only numeric values.");
             }
         }
 
-        // If the amount of variables in the input is different from the current count ask user to proceed.
+        // If the amount of variables in the input is different from the current count
+        // ask user to proceed.
         if (input.length != program.getVariableCount()) {
-            System.out.print("The amount of variables in your program will change. Type OK to proceed or anything else to cancel: ");
-            if (!scanner.nextLine().equalsIgnoreCase("OK")) return "OPERATION CANCELED";
+            System.out.print(
+                    "The amount of variables in your program will change. Type OK to proceed or anything else to cancel: ");
+            if (!scanner.nextLine().equalsIgnoreCase("OK"))
+                return "OPERATION CANCELED";
         }
 
         System.out.print("Enter the desired optimization direction (MAX or MIN): ");

@@ -1,14 +1,10 @@
-### Mohammad
-- [ ] getForm Operation clean machen.
-- [ ] Add und remove coefficient methode.
-
 ### High prio
-- [ ] Config und Algorithm Phase trennen
-- [ ] Befehl um das lineare Program final zu bestätigen, um NormalFormOperation, Simplex etc freizuschalten...
-- [ ] StandardForm nicht möglich nach NormalForm! 
+- [ ] Setup Phase fertig 
+- [ ] Bestätigung für User, dass in Normalform convertiert wurde
+- [ ] Einen Algorithmus anfangen (primaler Simplex?)
 
 ### Medium prio
-- [ ] keine modification operations nach NormalFormOperation (Simplex etc. erst mit NormalForm möglich!
+- [ ]
 
 ### Low prio
 - [ ] right align Nichtnegativitätsbedingungen (/show)
@@ -18,6 +14,7 @@
 
 ### Ideen
 - SetColumn Befehl?
+- Bei solo constraints kein =
 
 
 
@@ -30,3 +27,28 @@
 - Zulässiger Punkt
 - Optimaler Punkt
 - Ecken (Extrempunkte von konvexen Mengen)
+
+### Config
+
+- set variable count
+- create OF /change ObjectiveFunction
+- add / remove contraint
+- start
+- show
+- quit exit
+
+###
+Algorithmen
+- Primaler Simplex
+- Dualer Simplex
+- Phase I Methode
+- Big M Methode
+
+
+Für das Durchführen der Algorithmen wurde das LOP in Normalform gesetzt:
+#printen#
+
+### Setup Phase
+
+- Willkommensnachricht
+- 

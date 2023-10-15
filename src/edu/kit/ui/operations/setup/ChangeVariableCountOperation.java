@@ -1,4 +1,4 @@
-package edu.kit.ui.operations.modification;
+package edu.kit.ui.operations.setup;
 
 import java.util.Scanner;
 
@@ -31,7 +31,8 @@ public class ChangeVariableCountOperation extends Operation {
         } catch (NumberFormatException exception) {
             throw new OperationException("Invalid input. Use a numeric value.");
         }
-        if (variableCount < 0) throw new OperationException("Invalid value. Use a positive integer.");
+        if (variableCount < 0)
+            throw new OperationException("Invalid value. Use a positive integer.");
 
         program.setVariableCount(variableCount);
         return SUCCESS;
